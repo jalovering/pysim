@@ -58,6 +58,12 @@ class Animal(Creature):
     def create_sensor(self):
         add_sensor_event = pygame.event.Event(ADDSENSOR, animal=self)
         pygame.event.post(add_sensor_event)
+    def react_to_player(self, player):
+        colissions = pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False)
+        if colissions == []:
+            return False
+        else:
+            return True
 
 class Prey(Animal):
     def __init__(self, color=COLOR_PREY, size=20, speed=1, sense=100):
@@ -91,7 +97,9 @@ class Prey(Animal):
     # def move_react(self):
         # reaction order, Predator > Player > Needs
         # needs = food or mate
-    def update(self):
+    def update(self, player):
+        if self.react_to_player(player):
+            print("PLAYER COLISSION")
         move_x, move_y = self.move_random()
         # move_x = random.randint(-1, 1)
         # move_y = random.randint(-1, 1)

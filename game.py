@@ -119,7 +119,7 @@ while running:
     sensor_group.update()
 
     # update prey locations
-    prey_group.update()
+    prey_group.update(player)
 
     # update player location
     player.update(pressed_keys)
