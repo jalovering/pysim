@@ -116,10 +116,10 @@ while running:
     berry_group.update()
 
     # update prey locations
-    sensor_group.update()
+    sensor_group.update(player)
 
     # update prey locations
-    prey_group.update(player)
+    prey_group.update()
 
     # update player location
     player.update(pressed_keys)

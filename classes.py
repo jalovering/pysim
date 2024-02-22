@@ -55,15 +55,11 @@ class Animal(Creature):
     def __init__(self, color, size, speed, sense):
         super(Animal, self).__init__(color, size, speed)
         self.sense = sense
+        self.sensePlayer = False
+        self.sensePlayerLoc = ()
     def create_sensor(self):
         add_sensor_event = pygame.event.Event(ADDSENSOR, animal=self)
         pygame.event.post(add_sensor_event)
-    def react_to_player(self, player):
-        colissions = pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False)
-        if colissions == []:
-            return False
-        else:
-            return True
 
 class Prey(Animal):
     def __init__(self, color=COLOR_PREY, size=20, speed=1, sense=100):
@@ -94,13 +90,31 @@ class Prey(Animal):
         if self.prev_move_y == 1:
             move_y = random.choices([-1,0,1],[0.01,0.04,0.95])[0]
         return move_x, move_y
+    def move_away(self):
+        diff_x = self.rect.x - self.sensePlayerLoc[0]
+        diff_y = self.rect.x - self.sensePlayerLoc[1]
+        if(diff_x > 0):
+            move_x = 1
+        elif(diff_x < 0):
+            move_x = -1
+        else:
+            move_x = 0
+        if(diff_y > 0):
+            move_y = 1
+        elif(diff_y < 0):
+            move_y = -1
+        else:
+            move_y = 0
+        return move_x, move_y
     # def move_react(self):
         # reaction order, Predator > Player > Needs
         # needs = food or mate
-    def update(self, player):
-        if self.react_to_player(player):
+    def update(self):
+        if(self.sensePlayer):
             print("PLAYER COLISSION")
-        move_x, move_y = self.move_random()
+            move_x, move_y = self.move_away()
+        else:
+            move_x, move_y = self.move_random()
         # move_x = random.randint(-1, 1)
         # move_y = random.randint(-1, 1)
         self.rect.move_ip(move_x*self.speed, move_y*self.speed)
@@ -121,8 +135,18 @@ class Sensor(pygame.sprite.Sprite):
     def draw(self):
         self.surf = pygame.Surface((self.size*2,self.size*2),pygame.SRCALPHA)
         pygame.draw.circle(self.surf, self.color, (self.size, self.size), self.size, self.size)
-    def update(self):
+    def update(self,player):
+        self.react_to_player(player)
         self.rect.center = self.animal.rect.center
+    def react_to_player(self, player):
+        colissions = pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False)
+        if colissions == []:
+            self.animal.sensePlayer = False
+            return False
+        else:
+            self.animal.sensePlayer = True
+            self.animal.sensePlayerLoc = (player.rect.x,player.rect.y)
+            return True
 
 class Plant(pygame.sprite.Sprite):
     def __init__(self, color=COLOR_PLANT, size=4, age=1, growth=1, berries=0):
