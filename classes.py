@@ -57,6 +57,10 @@ class Animal(Creature):
         self.sense = sense
         self.sensePlayer = False
         self.sensePlayerLoc = ()
+        self.senseFood = False
+        self.senseFoodLoc = ()
+        self.touchFood = False
+        self.touchFoodSource = "n/a"
     def create_sensor(self):
         add_sensor_event = pygame.event.Event(ADDSENSOR, animal=self)
         pygame.event.post(add_sensor_event)
@@ -75,6 +79,15 @@ class Prey(Animal):
         self.create_sensor()
         self.prev_move_x = 0
         self.prev_move_y = 0
+    def touch_food(self, plant_group):
+        colissions = pygame.sprite.spritecollide(self, plant_group, False)
+        if colissions == []:
+            self.touchFood = False
+            return False
+        else:
+            self.touchFood = True
+            self.touchFoodSource = colissions[0]
+            return True
     def move_random(self):
         # apply movement based on prior frame
         if self.prev_move_x == -1:
@@ -91,8 +104,8 @@ class Prey(Animal):
             move_y = random.choices([-1,0,1],[0.01,0.04,0.95])[0]
         return move_x, move_y
     def move_away(self):
-        diff_x = self.rect.x - self.sensePlayerLoc[0]
-        diff_y = self.rect.x - self.sensePlayerLoc[1]
+        diff_x = self.rect.center[0] - self.sensePlayerLoc[0]
+        diff_y = self.rect.center[1] - self.sensePlayerLoc[1]
         if(diff_x > 0):
             move_x = 1
         elif(diff_x < 0):
@@ -106,13 +119,34 @@ class Prey(Animal):
         else:
             move_y = 0
         return move_x, move_y
-    # def move_react(self):
-        # reaction order, Predator > Player > Needs
-        # needs = food or mate
-    def update(self):
-        if(self.sensePlayer):
-            print("PLAYER COLISSION")
+    def move_toward(self):
+        diff_x = self.rect.center[0] - self.senseFoodLoc[0]
+        diff_y = self.rect.center[1] - self.senseFoodLoc[1]
+        if(diff_x > 0):
+            move_x = -1
+        elif(diff_x < 0):
+            move_x = 1
+        else:
+            move_x = 0
+        if(diff_y > 0):
+            move_y = -1
+        elif(diff_y < 0):
+            move_y = 1
+        else:
+            move_y = 0
+        return move_x, move_y
+    def update(self,plant_group):
+        self.touch_food(plant_group)
+        if self.sensePlayer:
+            # print("SENSE PLAYER")
             move_x, move_y = self.move_away()
+        elif self.touchFood:
+            print("TOUCH FOOD")
+            move_x, move_y = 0,0
+            exit
+        elif self.senseFood:
+            # print("SENSE FOOD")
+            move_x, move_y = self.move_toward()
         else:
             move_x, move_y = self.move_random()
         # move_x = random.randint(-1, 1)
@@ -135,17 +169,28 @@ class Sensor(pygame.sprite.Sprite):
     def draw(self):
         self.surf = pygame.Surface((self.size*2,self.size*2),pygame.SRCALPHA)
         pygame.draw.circle(self.surf, self.color, (self.size, self.size), self.size, self.size)
-    def update(self,player):
-        self.react_to_player(player)
+    def update(self,player,plant_group):
+        self.sense_player(player)
+        self.sense_food(plant_group)
         self.rect.center = self.animal.rect.center
-    def react_to_player(self, player):
+    def sense_player(self, player):
         colissions = pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False)
         if colissions == []:
             self.animal.sensePlayer = False
             return False
         else:
             self.animal.sensePlayer = True
-            self.animal.sensePlayerLoc = (player.rect.x,player.rect.y)
+            # self.animal.sensePlayerLoc = (player.rect.x,player.rect.y)
+            self.animal.sensePlayerLoc = player.rect.center
+            return True
+    def sense_food(self, plant_group):
+        colissions = pygame.sprite.spritecollide(self, plant_group, False)
+        if colissions == []:
+            self.animal.senseFood = False
+            return False
+        else:
+            self.animal.senseFood = True
+            self.animal.senseFoodLoc = colissions[0].rect.center
             return True
 
 class Plant(pygame.sprite.Sprite):
