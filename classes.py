@@ -80,14 +80,16 @@ class Prey(Animal):
         self.prev_move_x = 0
         self.prev_move_y = 0
     def touch_food(self, plant_group):
-        colissions = pygame.sprite.spritecollide(self, plant_group, False)
-        if colissions == []:
-            self.touchFood = False
+        food_sensed = pygame.sprite.spritecollide(self, plant_group, False)
+        self.touchFood = False
+        if food_sensed == []:
             return False
-        else:
-            self.touchFood = True
-            self.touchFoodSource = colissions[0]
-            return True
+        for plant in food_sensed:
+            if plant.berries >= 1:
+                self.touchFood = True
+                self.touchFoodSource = plant.rect.center
+                return True
+        return False
     def move_random(self):
         # apply movement based on prior frame
         if self.prev_move_x == -1:
@@ -141,7 +143,6 @@ class Prey(Animal):
             # print("SENSE PLAYER")
             move_x, move_y = self.move_away()
         elif self.touchFood:
-            print("TOUCH FOOD")
             move_x, move_y = 0,0
             exit
         elif self.senseFood:
@@ -152,6 +153,15 @@ class Prey(Animal):
         # move_x = random.randint(-1, 1)
         # move_y = random.randint(-1, 1)
         self.rect.move_ip(move_x*self.speed, move_y*self.speed)
+        # keep in bounds
+        if self.rect.left < BUFFER/2:
+            self.rect.left = BUFFER/2
+        if self.rect.right > SCREEN_WIDTH-BUFFER/2:
+            self.rect.right = SCREEN_WIDTH-BUFFER/2
+        if self.rect.top <= BUFFER/2 - self.size:
+            self.rect.top = BUFFER/2 - self.size
+        if self.rect.bottom >= SCREEN_HEIGHT-BUFFER/2:
+            self.rect.bottom = SCREEN_HEIGHT-BUFFER/2
         # save movement for next frame
         self.prev_move_x = move_x
         self.prev_move_y = move_y
@@ -184,14 +194,16 @@ class Sensor(pygame.sprite.Sprite):
             self.animal.sensePlayerLoc = player.rect.center
             return True
     def sense_food(self, plant_group):
-        colissions = pygame.sprite.spritecollide(self, plant_group, False)
-        if colissions == []:
-            self.animal.senseFood = False
+        food_sensed = pygame.sprite.spritecollide(self, plant_group, False)
+        self.animal.senseFood = False
+        if food_sensed == []:
             return False
-        else:
-            self.animal.senseFood = True
-            self.animal.senseFoodLoc = colissions[0].rect.center
-            return True
+        for plant in food_sensed:
+            if plant.berries >= 1:
+                self.animal.senseFood = True
+                self.animal.senseFoodLoc = plant.rect.center
+                return True
+        return False
 
 class Plant(pygame.sprite.Sprite):
     def __init__(self, color=COLOR_PLANT, size=4, age=1, growth=1, berries=0):

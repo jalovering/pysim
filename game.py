@@ -138,13 +138,13 @@ while running:
     # draw sprites
     # for entity in all_group:
     #     screen.blit(entity.surf, entity.rect)
-    for entity in plant_group:
-        screen.blit(entity.surf, entity.rect)
-    for entity in berry_group:
-        screen.blit(entity.surf, entity.rect)
     for entity in sensor_group:
         screen.blit(entity.surf, entity.rect)
     for entity in prey_group:
+        screen.blit(entity.surf, entity.rect)
+    for entity in plant_group:
+        screen.blit(entity.surf, entity.rect)
+    for entity in berry_group:
         screen.blit(entity.surf, entity.rect)
     screen.blit(player.surf, player.rect)
 
