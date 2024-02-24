@@ -79,17 +79,22 @@ class Prey(Animal):
         self.create_sensor()
         self.prev_move_x = 0
         self.prev_move_y = 0
-    def touch_food(self, plant_group):
-        food_sensed = pygame.sprite.spritecollide(self, plant_group, False)
+    def touch_plant(self, plant_group):
+        food_touched = pygame.sprite.spritecollide(self, plant_group, False)
         self.touchFood = False
-        if food_sensed == []:
+        if food_touched == []:
             return False
-        for plant in food_sensed:
-            if plant.berries >= 1:
+        for plant in food_touched:
+            if len(plant.berries) >= 1:
                 self.touchFood = True
-                self.touchFoodSource = plant.rect.center
+                self.touchFoodSource = plant
                 return True
         return False
+    def eat_berry(self):
+        random_berry = random.choice(self.touchFoodSource.berries)
+        self.touchFoodSource.berries.remove(random_berry)
+        random_berry.kill()
+        # del random_berry
     def move_random(self):
         # apply movement based on prior frame
         if self.prev_move_x == -1:
@@ -138,12 +143,13 @@ class Prey(Animal):
             move_y = 0
         return move_x, move_y
     def update(self,plant_group):
-        self.touch_food(plant_group)
+        self.touch_plant(plant_group)
         if self.sensePlayer:
             # print("SENSE PLAYER")
             move_x, move_y = self.move_away()
         elif self.touchFood:
             move_x, move_y = 0,0
+            self.eat_berry()
             exit
         elif self.senseFood:
             # print("SENSE FOOD")
@@ -158,8 +164,8 @@ class Prey(Animal):
             self.rect.left = BUFFER/2
         if self.rect.right > SCREEN_WIDTH-BUFFER/2:
             self.rect.right = SCREEN_WIDTH-BUFFER/2
-        if self.rect.top <= BUFFER/2 - self.size:
-            self.rect.top = BUFFER/2 - self.size
+        if self.rect.top <= BUFFER/2:
+            self.rect.top = BUFFER/2
         if self.rect.bottom >= SCREEN_HEIGHT-BUFFER/2:
             self.rect.bottom = SCREEN_HEIGHT-BUFFER/2
         # save movement for next frame
@@ -199,14 +205,14 @@ class Sensor(pygame.sprite.Sprite):
         if food_sensed == []:
             return False
         for plant in food_sensed:
-            if plant.berries >= 1:
+            if len(plant.berries) >= 1:
                 self.animal.senseFood = True
                 self.animal.senseFoodLoc = plant.rect.center
                 return True
         return False
 
 class Plant(pygame.sprite.Sprite):
-    def __init__(self, color=COLOR_PLANT, size=4, age=1, growth=1, berries=0):
+    def __init__(self, color=COLOR_PLANT, size=4, age=1, growth=1, berries=[]):
         self.color = color
         self.size = size
         self.age = age
@@ -237,9 +243,8 @@ class Plant(pygame.sprite.Sprite):
             self.size += 1 * self.growth
             self.draw()
             self.next_growth += PLANT_GROWTH_INTERVAL
-        elif self.size >= PLANT_SIZE_MAX and self.age > self.next_growth and self.berries < PLANT_BERRIES_MAX:
+        elif self.size >= PLANT_SIZE_MAX and self.age > self.next_growth and len(self.berries) < PLANT_BERRIES_MAX:
             self.add_berry()
-            self.berries += 1
             self.draw()
             self.next_growth += PLANT_GROWTH_INTERVAL
 

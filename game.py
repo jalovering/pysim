@@ -92,7 +92,7 @@ while running:
                 size=4,
                 age=1,
                 growth=1,
-                berries=0
+                berries=[]
                 )
             plant_group.add(new_plant)
             all_group.add(new_plant)
@@ -103,6 +103,7 @@ while running:
                 color=COLOR_BERRY,
                 size=1,
                 )
+            event.plant.berries.append(new_berry)
             berry_group.add(new_berry)
             all_group.add(new_berry)
 
