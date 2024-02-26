@@ -4,9 +4,9 @@ from var import *
 import random
 
 class Prey(Animal):
-    def __init__(self, color=COLOR_PREY, size=20, speed=1, sense=100):
+    def __init__(self, color=COLOR_PREY, size=10, speed=1, sense=100):
         super(Prey, self).__init__(color, size, speed, sense)
-        self.surf = pygame.Surface((self.size, self.size))
+        self.surf = pygame.Surface((self.size*1.5, self.size))
         self.surf.fill(self.color)
         self.rect = self.surf.get_rect(
             center=(
