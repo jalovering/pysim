@@ -30,7 +30,7 @@ SCREEN_HEIGHT = 720
 BUFFER = 60
 ## time
 PLAY_SPEED_MOD = 6
-PLAY_SPEED_MOD = 1
+# PLAY_SPEED_MOD = 1
 ## genes
 PREY_EAT_TIME = 60 # takes 1 second to eat
 PLANT_GROWTH_INTERVAL = 600 # grow every 10 seconds

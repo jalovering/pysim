@@ -1,17 +1,10 @@
 import pygame
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
-import random
-from classes import *
+from Player import Player
+from Plant import Plant
+from Prey import Prey
+from Sensor import Sensor
+from Berry import Berry
 from var import *
-import math
 
 # initialize pygame
 pygame.init()
