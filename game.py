@@ -16,11 +16,11 @@ pygame.display.set_caption('pysim')
 
 # custom event - add prey
 # ADDPREY = pygame.USEREVENT + 1
-pygame.time.set_timer(ADDPREY, int(5000/PLAY_SPEED_MOD))
+pygame.time.set_timer(ADDPREY, int(20000/PLAY_SPEED_MOD))
 
 # custom event - add plant
 # ADDPLANT = pygame.USEREVENT + 2
-pygame.time.set_timer(ADDPLANT, int(6000/PLAY_SPEED_MOD))
+pygame.time.set_timer(ADDPLANT, int(10000/PLAY_SPEED_MOD))
 
 # custom event - add berry
 # ADDBERRY = pygame.USEREVENT + 3
@@ -59,25 +59,25 @@ while running:
         # QUIT - window close      
         if event.type == pygame.QUIT: 
             running = False
-        # # add new prey
-        # elif event.type == ADDPREY:
-        #     new_prey = Prey(
-        #         color=COLOR_PREY,
-        #         size=20,
-        #         speed=1,
-        #         sense=100
-        #         )
-        #     prey_group.add(new_prey)
-        #     all_group.add(new_prey)
-        # # add new sensor
-        # elif event.type == ADDSENSOR:
-        #     new_sensor= Sensor(
-        #         animal=event.animal,
-        #         color=COLOR_SENSOR,
-        #         size=100,
-        #         )
-        #     sensor_group.add(new_sensor)
-        #     all_group.add(new_sensor)
+        # add new prey
+        elif event.type == ADDPREY:
+            new_prey = Prey(
+                color=COLOR_PREY,
+                size=10,
+                speed=1,
+                sense=100
+                )
+            prey_group.add(new_prey)
+            all_group.add(new_prey)
+        # add new sensor
+        elif event.type == ADDSENSOR:
+            new_sensor= Sensor(
+                animal=event.animal,
+                color=COLOR_SENSOR,
+                size=100,
+                )
+            sensor_group.add(new_sensor)
+            all_group.add(new_sensor)
         # add new plant
         elif event.type == ADDPLANT:
             new_plant = Plant(
@@ -142,7 +142,10 @@ while running:
         screen.blit(entity.surf, entity.rect)
     screen.blit(player.surf, player.rect)
 
+    ### TESTING START
+    # print(pygame.time.get_ticks())
+    ### TESTING END
+
     # update display
     pygame.display.flip()
-    # print(pygame.time.get_ticks())
     clock.tick(60)

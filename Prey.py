@@ -2,10 +2,11 @@ import pygame
 from Animal import Animal
 from var import *
 import random
+import time
 
 class Prey(Animal):
-    def __init__(self, color=COLOR_PREY, size=10, speed=1, sense=100):
-        super(Prey, self).__init__(color, size, speed, sense)
+    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, sense=100):
+        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, sense)
         self.surf = pygame.Surface((self.size*1.5, self.size))
         self.surf.fill(self.color)
         self.rect = self.surf.get_rect(
@@ -28,11 +29,19 @@ class Prey(Animal):
                 self.touchFoodSource = plant
                 return True
         return False
-    def eat_berry(self):
+    def start_eat(self):
+        # update status
+        self.status = "eating"
+        self.statusLastUpdated = pygame.time.get_ticks()
+    def finish_eat(self):
+        # remove berry
         random_berry = random.choice(self.touchFoodSource.berries)
         self.touchFoodSource.berries.remove(random_berry)
         random_berry.kill()
-        # del random_berry
+        del random_berry
+        # update sattus
+        self.status = "moving"
+        self.statusLastUpdated = pygame.time.get_ticks()
     def move_random(self):
         # apply movement based on prior frame
         if self.prev_move_x == -1:
@@ -81,14 +90,24 @@ class Prey(Animal):
             move_y = 0
         return move_x, move_y
     def update(self,plant_group):
+        # check colissions
         self.touch_plant(plant_group)
         if self.sensePlayer:
-            # print("SENSE PLAYER")
             move_x, move_y = self.move_away()
+            self.status = "moving"
+            self.statusLastUpdated = pygame.time.get_ticks()
         elif self.touchFood:
-            move_x, move_y = 0,0
-            self.eat_berry()
-            exit
+            if self.status == "eating" and self.statusLastUpdated + PREY_EAT_TIME >= pygame.time.get_ticks() :
+                move_x, move_y = 0,0
+                exit
+            elif self.status == "eating" and self.statusLastUpdated - PREY_EAT_TIME < pygame.time.get_ticks():
+                self.finish_eat()
+                move_x, move_y = self.move_random()
+                exit
+            else:
+                self.start_eat()
+                move_x, move_y = 0,0
+                exit
         elif self.senseFood:
             # print("SENSE FOOD")
             move_x, move_y = self.move_toward()
