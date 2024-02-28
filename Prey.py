@@ -2,11 +2,10 @@ import pygame
 from Animal import Animal
 from var import *
 import random
-import time
 
 class Prey(Animal):
-    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, sense=100):
-        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, sense)
+    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, hunger=0, age=0, sense=100):
+        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense)
         self.surf = pygame.Surface((self.size*1.5, self.size))
         self.surf.fill(self.color)
         self.rect = self.surf.get_rect(
@@ -15,9 +14,12 @@ class Prey(Animal):
                 random.randint(0+BUFFER, SCREEN_HEIGHT-BUFFER),
             )
         )
+        self.text_font_hunger = pygame.font.Font(None, 16)
+        self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
         self.create_sensor()
         self.prev_move_x = 0
         self.prev_move_y = 0
+        self.next_hunger = PREY_HUNGER_INTERVAL
     def touch_plant(self, plant_group):
         food_touched = pygame.sprite.spritecollide(self, plant_group, False)
         self.touchFood = False
@@ -39,9 +41,12 @@ class Prey(Animal):
         self.touchFoodSource.berries.remove(random_berry)
         random_berry.kill()
         del random_berry
-        # update sattus
+        # update status
         self.status = "moving"
         self.statusLastUpdated = pygame.time.get_ticks()
+        # update hunger
+        self.hunger -= 1
+        self.update_hunger_text()
     def move_random(self):
         # apply movement based on prior frame
         if self.prev_move_x == -1:
@@ -89,7 +94,18 @@ class Prey(Animal):
         else:
             move_y = 0
         return move_x, move_y
+    def update_hunger_text(self):
+        self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
     def update(self,plant_group):
+        ## GUARANTEED UPDATES ##
+        # age in frames
+        self.age += 1*PLAY_SPEED_MOD
+        # hunger
+        if self.age > self.next_hunger: 
+            self.hunger += 1
+            self.next_hunger += PREY_HUNGER_INTERVAL
+            self.update_hunger_text()
+        ## CONDITIONAL UPDATES ##
         # check colissions
         self.touch_plant(plant_group)
         if self.sensePlayer:
@@ -97,10 +113,10 @@ class Prey(Animal):
             self.status = "moving"
             self.statusLastUpdated = pygame.time.get_ticks()
         elif self.touchFood:
-            if self.status == "eating" and self.statusLastUpdated + PREY_EAT_TIME >= pygame.time.get_ticks() :
+            if self.status == "eating" and (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
                 move_x, move_y = 0,0
                 exit
-            elif self.status == "eating" and self.statusLastUpdated - PREY_EAT_TIME < pygame.time.get_ticks():
+            elif self.status == "eating" and (self.statusLastUpdated - (PREY_EAT_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
                 self.finish_eat()
                 move_x, move_y = self.move_random()
                 exit
@@ -113,8 +129,7 @@ class Prey(Animal):
             move_x, move_y = self.move_toward()
         else:
             move_x, move_y = self.move_random()
-        # move_x = random.randint(-1, 1)
-        # move_y = random.randint(-1, 1)
+        ## MOVEMENT ##
         self.rect.move_ip(move_x*self.speed, move_y*self.speed)
         # keep in bounds
         if self.rect.left < BUFFER/2:

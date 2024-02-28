@@ -33,6 +33,7 @@ PLAY_SPEED_MOD = 6
 # PLAY_SPEED_MOD = 1
 ## genes
 PREY_EAT_TIME = 1000 # takes 1000ms to eat
+PREY_HUNGER_INTERVAL = 600 # gain 1 hunger every 600 frames (10 seconds)
 PLANT_GROWTH_INTERVAL = 600 # grow every 600 frames (10 seconds)
 PLANT_SIZE_MAX = 10
 PLANT_BERRIES_MAX = 10

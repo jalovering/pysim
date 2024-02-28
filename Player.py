@@ -9,8 +9,8 @@ from pygame.locals import (
 )
 
 class Player(Creature):
-    def __init__(self, color=COLOR_PLAYER, size=20, speed=2, status="moving", statusLastUpdated=0):
-        super(Player, self).__init__(color, size, speed, status, statusLastUpdated)
+    def __init__(self, color=COLOR_PLAYER, size=20, speed=2, status="moving", statusLastUpdated=0, hunger=0, age=0):
+        super(Player, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age)
         self.surf = pygame.Surface((self.size, self.size*1.5))
         self.surf.fill(self.color)
         self.rect = self.surf.get_rect()

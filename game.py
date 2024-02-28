@@ -16,11 +16,11 @@ pygame.display.set_caption('pysim')
 
 # custom event - add prey
 # ADDPREY = pygame.USEREVENT + 1
-pygame.time.set_timer(ADDPREY, int(20000/PLAY_SPEED_MOD))
+pygame.time.set_timer(ADDPREY, int(40000/PLAY_SPEED_MOD))
 
 # custom event - add plant
 # ADDPLANT = pygame.USEREVENT + 2
-pygame.time.set_timer(ADDPLANT, int(10000/PLAY_SPEED_MOD))
+pygame.time.set_timer(ADDPLANT, int(60000/PLAY_SPEED_MOD))
 
 # custom event - add berry
 # ADDBERRY = pygame.USEREVENT + 3
@@ -136,6 +136,7 @@ while running:
         screen.blit(entity.surf, entity.rect)
     for entity in prey_group:
         screen.blit(entity.surf, entity.rect)
+        screen.blit(entity.text_surf, (entity.rect.x + 20, entity.rect.y + 10))
     for entity in plant_group:
         screen.blit(entity.surf, entity.rect)
     for entity in berry_group:

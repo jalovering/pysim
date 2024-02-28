@@ -29,7 +29,7 @@ class Plant(pygame.sprite.Sprite):
     def update(self):
         # age in frames
         self.age += 1*PLAY_SPEED_MOD
-        # size
+        # grow (size)
         if self.size < PLANT_SIZE_MAX and self.age > self.next_growth: 
             self.size += 1 * self.growth
             self.draw()

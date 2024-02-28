@@ -3,8 +3,8 @@ from Creature import Creature
 from var import *
 
 class Animal(Creature):
-    def __init__(self, color, size, speed, status, statusLastUpdated, sense):
-        super(Animal, self).__init__(color, size, speed, status, statusLastUpdated)
+    def __init__(self, color, size, speed, status, statusLastUpdated, hunger, age, sense):
+        super(Animal, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age)
         self.sense = sense
         self.sensePlayer = False
         self.sensePlayerLoc = ()
