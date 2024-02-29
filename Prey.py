@@ -96,13 +96,29 @@ class Prey(Animal):
         return move_x, move_y
     def update_hunger_text(self):
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
+    def start_dying(self):
+        print("dying")
+        self.status = "dying"
+        self.statusLastUpdated = pygame.time.get_ticks()
     def die(self):
+        print("died")
         self.sensor.kill()
         del self.sensor
         self.kill()
         del self
     def update(self,plant_group):
         ## GUARANTEED UPDATES ##
+        if self.status == "dying" and (self.statusLastUpdated + (PREY_DYING_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks():
+            move_x, move_y = 0,0
+            sensor_color_list = list(self.sensor.color)
+            sensor_color_list[3] -= 1
+            sensor_color_list[3] = max(sensor_color_list[3], 0)
+            self.sensor.color = tuple(sensor_color_list)
+            self.sensor.draw()
+            return
+        elif self.status == "dying" and (self.statusLastUpdated + (PREY_DYING_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
+            self.die()
+            return
         # age in frames
         self.age += 1*PLAY_SPEED_MOD
         # hunger
@@ -111,7 +127,7 @@ class Prey(Animal):
             self.next_hunger += PREY_HUNGER_INTERVAL
             self.update_hunger_text()
         if self.hunger >= PREY_DEATH_BY_HUNGER:
-            self.die()
+            self.start_dying()
         ## CONDITIONAL UPDATES ##
         # check colissions
         self.touch_plant(plant_group)
@@ -123,7 +139,7 @@ class Prey(Animal):
             if self.status == "eating" and (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
                 move_x, move_y = 0,0
                 exit
-            elif self.status == "eating" and (self.statusLastUpdated - (PREY_EAT_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
+            elif self.status == "eating" and (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
                 self.finish_eat()
                 move_x, move_y = self.move_random()
                 exit
