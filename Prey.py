@@ -4,8 +4,8 @@ from var import *
 import random
 
 class Prey(Animal):
-    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, hunger=0, age=0, sense=100):
-        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense)
+    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, hunger=0, age=0, sense=100, sensor=None):
+        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor)
         self.surf = pygame.Surface((self.size*1.5, self.size))
         self.surf.fill(self.color)
         self.rect = self.surf.get_rect(
@@ -96,6 +96,11 @@ class Prey(Animal):
         return move_x, move_y
     def update_hunger_text(self):
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
+    def die(self):
+        self.sensor.kill()
+        del self.sensor
+        self.kill()
+        del self
     def update(self,plant_group):
         ## GUARANTEED UPDATES ##
         # age in frames
@@ -105,6 +110,8 @@ class Prey(Animal):
             self.hunger += 1
             self.next_hunger += PREY_HUNGER_INTERVAL
             self.update_hunger_text()
+        if self.hunger >= PREY_DEATH_BY_HUNGER:
+            self.die()
         ## CONDITIONAL UPDATES ##
         # check colissions
         self.touch_plant(plant_group)

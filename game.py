@@ -76,6 +76,7 @@ while running:
                 color=COLOR_SENSOR,
                 size=100,
                 )
+            event.animal.sensor = new_sensor
             sensor_group.add(new_sensor)
             all_group.add(new_sensor)
         # add new plant

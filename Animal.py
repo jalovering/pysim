@@ -3,9 +3,10 @@ from Creature import Creature
 from var import *
 
 class Animal(Creature):
-    def __init__(self, color, size, speed, status, statusLastUpdated, hunger, age, sense):
+    def __init__(self, color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor):
         super(Animal, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age)
         self.sense = sense
+        self.sensor = sensor
         self.sensePlayer = False
         self.sensePlayerLoc = ()
         self.senseFood = False
