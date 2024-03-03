@@ -37,7 +37,7 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-new_prey = Prey(hunger=9)
+new_prey = Prey(hunger=1)
 prey_group.add(new_prey)
 all_group.add(new_prey)
 new_sensor = Sensor(new_prey)

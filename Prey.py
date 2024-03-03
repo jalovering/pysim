@@ -4,7 +4,7 @@ from var import *
 import random
 
 class Prey(Animal):
-    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, hunger=0, age=0, sense=100, sensor=None):
+    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, hunger=10, age=0, sense=100, sensor=None):
         super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor)
         self.surf = pygame.Surface((self.size*1.5, self.size))
         self.surf.fill(self.color)
@@ -45,7 +45,8 @@ class Prey(Animal):
         self.status = "moving"
         self.statusLastUpdated = pygame.time.get_ticks()
         # update hunger
-        self.hunger -= 1
+        if self.hunger < 10:
+            self.hunger += 1
         self.update_hunger_text()
     def move_random(self):
         # apply movement based on prior frame
@@ -123,10 +124,10 @@ class Prey(Animal):
         self.age += 1*PLAY_SPEED_MOD
         # hunger
         if self.age > self.next_hunger: 
-            self.hunger += 1
+            self.hunger -= 1
             self.next_hunger += PREY_HUNGER_INTERVAL
             self.update_hunger_text()
-        if self.hunger >= PREY_DEATH_BY_HUNGER:
+        if self.hunger <= 0:
             self.start_dying()
         ## CONDITIONAL UPDATES ##
         # check colissions
