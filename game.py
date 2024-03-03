@@ -40,10 +40,6 @@ all_group.add(player)
 new_prey = Prey(hunger=1)
 prey_group.add(new_prey)
 all_group.add(new_prey)
-new_sensor = Sensor(new_prey)
-new_prey.sensor = new_sensor
-sensor_group.add(new_sensor)
-all_group.add(new_sensor)
 
 # initial plant object
 new_plant = Plant()
@@ -60,33 +56,22 @@ while running:
         # QUIT - window close      
         if event.type == pygame.QUIT: 
             running = False
-        # # add new prey
-        # elif event.type == ADDPREY:
-        #     new_prey = Prey(
-        #         color=COLOR_PREY,
-        #         size=10,
-        #         speed=1,
-        #         sense=100
-        #         )
-        #     prey_group.add(new_prey)
-        #     all_group.add(new_prey)
-        # # add new sensor
-        # elif event.type == ADDSENSOR:
-        #     new_sensor= Sensor(
-        #         animal=event.animal,
-        #         color=COLOR_SENSOR,
-        #         size=100,
-        #         )
-        #     event.animal.sensor = new_sensor
-        #     sensor_group.add(new_sensor)
-        #     all_group.add(new_sensor)
+        # add new prey
+        elif event.type == ADDPREY:
+            new_prey = Prey()
+            prey_group.add(new_prey)
+            all_group.add(new_prey)
+        # add new sensor
+        elif event.type == ADDSENSOR:
+            new_sensor= Sensor(                
+                animal=event.animal,
+                )
+            event.animal.sensor = new_sensor
+            sensor_group.add(new_sensor)
+            all_group.add(new_sensor)
         # add new plant
         elif event.type == ADDPLANT:
             new_plant = Plant(
-                color=COLOR_PLANT,
-                size=4,
-                age=1,
-                growth=1,
                 berries=[]
                 )
             plant_group.add(new_plant)
@@ -95,8 +80,6 @@ while running:
         elif event.type == ADDBERRY:
             new_berry = Berry(
                 plant=event.plant,
-                color=COLOR_BERRY,
-                size=1,
                 )
             event.plant.berries.append(new_berry)
             berry_group.add(new_berry)

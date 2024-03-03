@@ -30,7 +30,7 @@ SCREEN_HEIGHT = 720
 BUFFER = 60
 ## time
 PLAY_SPEED_MOD = 6
-PLAY_SPEED_MOD = 1
+# PLAY_SPEED_MOD = 1
 ## genes
 PREY_EAT_TIME = 1000 # takes 1000ms to eat
 PREY_HUNGER_INTERVAL = 600 # gain 1 hunger every 600 frames (10 seconds)
