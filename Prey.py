@@ -35,6 +35,8 @@ class Prey(Animal):
         # update status
         self.status = "eating"
         self.statusLastUpdated = pygame.time.get_ticks()
+    def update_hunger_text(self):
+        self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
     def finish_eat(self):
         # remove berry
         random_berry = random.choice(self.touchFoodSource.berries)
@@ -95,12 +97,16 @@ class Prey(Animal):
         else:
             move_y = 0
         return move_x, move_y
-    def update_hunger_text(self):
-        self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
     def start_dying(self):
         print("dying")
         self.status = "dying"
         self.statusLastUpdated = pygame.time.get_ticks()
+    def dying(self):
+            sensor_color_list = list(self.sensor.color)
+            sensor_color_list[3] -= 1
+            sensor_color_list[3] = max(sensor_color_list[3], 0)
+            self.sensor.color = tuple(sensor_color_list)
+            self.sensor.draw()
     def die(self):
         print("died")
         self.sensor.kill()
@@ -108,18 +114,15 @@ class Prey(Animal):
         self.kill()
         del self
     def update(self,plant_group):
-        ## GUARANTEED UPDATES ##
+        ## DEATH ##
         if self.status == "dying" and (self.statusLastUpdated + (PREY_DYING_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks():
-            move_x, move_y = 0,0
-            sensor_color_list = list(self.sensor.color)
-            sensor_color_list[3] -= 1
-            sensor_color_list[3] = max(sensor_color_list[3], 0)
-            self.sensor.color = tuple(sensor_color_list)
-            self.sensor.draw()
+            # fade sensor away
+            self.dying()
             return
         elif self.status == "dying" and (self.statusLastUpdated + (PREY_DYING_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
             self.die()
             return
+        ## TIME-BASED UPDATES ##
         # age in frames
         self.age += 1*PLAY_SPEED_MOD
         # hunger
@@ -129,28 +132,29 @@ class Prey(Animal):
             self.update_hunger_text()
         if self.hunger <= 0:
             self.start_dying()
-        ## CONDITIONAL UPDATES ##
+            return
+        ## COLISSIONS ##
         # check colissions
         self.touch_plant(plant_group)
+        # player colission
         if self.sensePlayer:
             move_x, move_y = self.move_away()
             self.status = "moving"
             self.statusLastUpdated = pygame.time.get_ticks()
+        # food colission
         elif self.touchFood:
             if self.status == "eating" and (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
-                move_x, move_y = 0,0
-                exit
+                return
             elif self.status == "eating" and (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
                 self.finish_eat()
                 move_x, move_y = self.move_random()
-                exit
             else:
                 self.start_eat()
-                move_x, move_y = 0,0
-                exit
+                return
+        # food colission
         elif self.senseFood:
-            # print("SENSE FOOD")
             move_x, move_y = self.move_toward()
+        # if no colissions, move randomly
         else:
             move_x, move_y = self.move_random()
         ## MOVEMENT ##

@@ -14,10 +14,6 @@ class Sensor(pygame.sprite.Sprite):
     def draw(self):
         self.surf = pygame.Surface((self.size*2,self.size*2),pygame.SRCALPHA)
         pygame.draw.circle(self.surf, self.color, (self.size, self.size), self.size, self.size)
-    def update(self,player,plant_group):
-        self.sense_player(player)
-        self.sense_food(plant_group)
-        self.rect.center = self.animal.rect.center
     def sense_player(self, player):
         colissions = pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False)
         if colissions == []:
@@ -39,3 +35,7 @@ class Sensor(pygame.sprite.Sprite):
                 self.animal.senseFoodLoc = plant.rect.center
                 return True
         return False
+    def update(self,player,plant_group):
+        self.sense_player(player)
+        self.sense_food(plant_group)
+        self.rect.center = self.animal.rect.center
