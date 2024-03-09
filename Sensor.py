@@ -21,7 +21,6 @@ class Sensor(pygame.sprite.Sprite):
             return False
         else:
             self.animal.sensePlayer = True
-            # self.animal.sensePlayerLoc = (player.rect.x,player.rect.y)
             self.animal.sensePlayerLoc = player.rect.center
             return True
     def sense_food(self, plant_group):
@@ -35,7 +34,20 @@ class Sensor(pygame.sprite.Sprite):
                 self.animal.senseFoodLoc = plant.rect.center
                 return True
         return False
-    def update(self,player,plant_group):
+    def sense_prey(self, prey_group):
+        prey_sensed = pygame.sprite.spritecollide(self, prey_group, False)
+        self.animal.sensePrey = False
+        if prey_sensed == []:
+            return False
+        for prey in prey_sensed:
+            if prey.age > prey.next_mate and prey.hunger >= 8:
+                self.animal.sensePrey = True
+                self.animal.sensePreyLoc = prey.rect.center
+                return True
+        return False
+    def update(self,player,plant_group,prey_group):
         self.sense_player(player)
+        if self.animal.status == "courting":
+            self.sense_prey(prey_group)
         self.sense_food(plant_group)
         self.rect.center = self.animal.rect.center

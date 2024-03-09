@@ -16,11 +16,11 @@ pygame.display.set_caption('pysim')
 
 # custom event - add prey
 # ADDPREY = pygame.USEREVENT + 1
-pygame.time.set_timer(ADDPREY, int(40000/PLAY_SPEED_MOD))
+# pygame.time.set_timer(ADDPREY, int(40000/PLAY_SPEED_MOD))
 
 # custom event - add plant
 # ADDPLANT = pygame.USEREVENT + 2
-pygame.time.set_timer(ADDPLANT, int(60000/PLAY_SPEED_MOD))
+# pygame.time.set_timer(ADDPLANT, int(60000/PLAY_SPEED_MOD))
 
 # custom event - add berry
 # ADDBERRY = pygame.USEREVENT + 3
@@ -37,14 +37,16 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-new_prey = Prey(hunger=1)
-prey_group.add(new_prey)
-all_group.add(new_prey)
+for i in range(6):
+    new_prey = Prey()
+    prey_group.add(new_prey)
+    all_group.add(new_prey)
 
 # initial plant object
-new_plant = Plant()
-plant_group.add(new_plant)
-all_group.add(new_plant)
+for i in range(8):
+    new_plant = Plant()
+    plant_group.add(new_plant)
+    all_group.add(new_plant)
 
 # game loop
 clock = pygame.time.Clock()
@@ -59,6 +61,11 @@ while running:
         # add new prey
         elif event.type == ADDPREY:
             new_prey = Prey()
+            prey_group.add(new_prey)
+            all_group.add(new_prey)
+        # add new baby prey
+        elif event.type == ADDPREYBABY:
+            new_prey = Prey(birthLoc=event.birthLoc)
             prey_group.add(new_prey)
             all_group.add(new_prey)
         # add new sensor
@@ -95,10 +102,10 @@ while running:
     berry_group.update()
 
     # update prey locations
-    sensor_group.update(player,plant_group)
+    sensor_group.update(player,plant_group,prey_group)
 
     # update prey locations
-    prey_group.update(plant_group)
+    prey_group.update(plant_group,prey_group)
 
     # update player location
     player.update(pressed_keys)

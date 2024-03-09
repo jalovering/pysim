@@ -4,22 +4,26 @@ from var import *
 import random
 
 class Prey(Animal):
-    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, hunger=10, age=0, sense=100, sensor=None):
-        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor)
+    def __init__(self, color=COLOR_PREY, size=10, speed=1, status="moving", statusLastUpdated=0, hunger=10, age=0, sense=100, sensor=None, birthLoc=()):
+        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor, birthLoc)
         self.surf = pygame.Surface((self.size*1.5, self.size))
         self.surf.fill(self.color)
-        self.rect = self.surf.get_rect(
-            center=(
-                random.randint(0+BUFFER, SCREEN_WIDTH-BUFFER),
-                random.randint(0+BUFFER, SCREEN_HEIGHT-BUFFER),
+        if birthLoc == ():
+            self.rect = self.surf.get_rect(
+                center=(
+                    random.randint(0+BUFFER, SCREEN_WIDTH-BUFFER),
+                    random.randint(0+BUFFER, SCREEN_HEIGHT-BUFFER),
+                )
             )
-        )
+        else:
+            self.rect = self.surf.get_rect(center=birthLoc)
         self.text_font_hunger = pygame.font.Font(None, 16)
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
         self.create_sensor()
         self.prev_move_x = 0
         self.prev_move_y = 0
         self.next_hunger = PREY_HUNGER_INTERVAL
+        self.next_mate = PREY_MATE_INTERVAL
     def touch_plant(self, plant_group):
         food_touched = pygame.sprite.spritecollide(self, plant_group, False)
         self.touchFood = False
@@ -29,6 +33,17 @@ class Prey(Animal):
             if len(plant.berries) >= 1:
                 self.touchFood = True
                 self.touchFoodSource = plant
+                return True
+        return False
+    def touch_prey(self, prey_group):
+        prey_touched = pygame.sprite.spritecollide(self, prey_group, False)
+        self.touchFood = False
+        if prey_touched == []:
+            return False
+        for prey in prey_touched:
+            if prey.age > prey.next_mate and prey.hunger >= 8:
+                self.touchPrey = True
+                self.touchPreySource = prey
                 return True
         return False
     def start_eat(self):
@@ -65,7 +80,7 @@ class Prey(Animal):
         if self.prev_move_y == 1:
             move_y = random.choices([-1,0,1],[0.01,0.04,0.95])[0]
         return move_x, move_y
-    def move_away(self):
+    def move_away(self,loc):
         diff_x = self.rect.center[0] - self.sensePlayerLoc[0]
         diff_y = self.rect.center[1] - self.sensePlayerLoc[1]
         if(diff_x > 0):
@@ -81,9 +96,9 @@ class Prey(Animal):
         else:
             move_y = 0
         return move_x, move_y
-    def move_toward(self):
-        diff_x = self.rect.center[0] - self.senseFoodLoc[0]
-        diff_y = self.rect.center[1] - self.senseFoodLoc[1]
+    def move_toward(self,loc):
+        diff_x = self.rect.center[0] - loc[0]
+        diff_y = self.rect.center[1] - loc[1]
         if(diff_x > 0):
             move_x = -1
         elif(diff_x < 0):
@@ -98,7 +113,6 @@ class Prey(Animal):
             move_y = 0
         return move_x, move_y
     def start_dying(self):
-        print("dying")
         self.status = "dying"
         self.statusLastUpdated = pygame.time.get_ticks()
     def dying(self):
@@ -108,12 +122,14 @@ class Prey(Animal):
             self.sensor.color = tuple(sensor_color_list)
             self.sensor.draw()
     def die(self):
-        print("died")
         self.sensor.kill()
         del self.sensor
         self.kill()
         del self
-    def update(self,plant_group):
+    def birth_baby(self):
+        add_prey_baby_event = pygame.event.Event(ADDPREYBABY, birthLoc=self.rect.center)
+        pygame.event.post(add_prey_baby_event)
+    def update(self,plant_group,prey_group):
         ## DEATH ##
         if self.status == "dying" and (self.statusLastUpdated + (PREY_DYING_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks():
             # fade sensor away
@@ -133,15 +149,30 @@ class Prey(Animal):
         if self.hunger <= 0:
             self.start_dying()
             return
-        ## COLISSIONS ##
-        # check colissions
+        # courting
+        if self.age > self.next_mate and self.hunger >= 8:
+            self.status = "courting"
+        ## COLLISIONS ##
+        # check collisions
         self.touch_plant(plant_group)
-        # player colission
+        # player collision
         if self.sensePlayer:
-            move_x, move_y = self.move_away()
+            move_x, move_y = self.move_away(self.sensePlayerLoc)
             self.status = "moving"
             self.statusLastUpdated = pygame.time.get_ticks()
-        # food colission
+        # prey collision (courting)
+        elif self.status == "courting":
+            self.touch_prey(prey_group)
+            if self.touchPrey:
+                print("MATING")
+                if random.choice([0, 1]) == 1:
+                    self.birth_baby()
+                self.next_mate += PREY_MATE_INTERVAL
+                self.status = "moving"
+                move_x, move_y = self.move_random()
+            elif self.sensePrey:
+                move_x, move_y = self.move_toward(self.sensePreyLoc)
+        # food collision
         elif self.touchFood:
             if self.status == "eating" and (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
                 return
@@ -151,10 +182,9 @@ class Prey(Animal):
             else:
                 self.start_eat()
                 return
-        # food colission
         elif self.senseFood:
-            move_x, move_y = self.move_toward()
-        # if no colissions, move randomly
+            move_x, move_y = self.move_toward(self.senseFoodLoc)
+        # if no collisions, move randomly
         else:
             move_x, move_y = self.move_random()
         ## MOVEMENT ##
