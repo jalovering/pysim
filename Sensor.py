@@ -40,7 +40,7 @@ class Sensor(pygame.sprite.Sprite):
         if prey_sensed == []:
             return False
         for prey in prey_sensed:
-            if prey.age > prey.next_mate and prey.hunger >= 8:
+            if prey != self.animal and prey.age > prey.next_mate and prey.hunger >= 8:
                 self.animal.sensePrey = True
                 self.animal.sensePreyLoc = prey.rect.center
                 return True

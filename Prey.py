@@ -41,7 +41,7 @@ class Prey(Animal):
         if prey_touched == []:
             return False
         for prey in prey_touched:
-            if prey.age > prey.next_mate and prey.hunger >= 8:
+            if prey != self and prey.age > prey.next_mate and prey.hunger >= 8:
                 self.touchPrey = True
                 self.touchPreySource = prey
                 return True
