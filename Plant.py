@@ -27,7 +27,6 @@ class Plant(pygame.sprite.Sprite):
         add_berry_event = pygame.event.Event(ADDBERRY, plant=self)
         pygame.event.post(add_berry_event)
     def update(self):
-        print("berries on this plant", len(self.berries))
         # age in frames
         self.age += 1*PLAY_SPEED_MOD
         # grow (size)

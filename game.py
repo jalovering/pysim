@@ -37,13 +37,13 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-for i in range(1):
+for i in range(4):
     new_prey = Prey()
     prey_group.add(new_prey)
     all_group.add(new_prey)
 
 # initial plant object
-for i in range(10):
+for i in range(6):
     new_plant = Plant(size=10)
     plant_group.add(new_plant)
     all_group.add(new_plant)
@@ -88,9 +88,7 @@ while running:
             new_berry = Berry(
                 plant=event.plant,
                 )
-            print(event.plant)
             event.plant.berries.append(new_berry)
-            print(event.plant.berries)
             berry_group.add(new_berry)
             all_group.add(new_berry)
 
@@ -102,7 +100,7 @@ while running:
 
     # update berry locations
     berry_group.update()
-    print(berry_group)
+
     # update prey locations
     sensor_group.update(player,plant_group,prey_group)
 

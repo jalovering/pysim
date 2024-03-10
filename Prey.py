@@ -31,7 +31,6 @@ class Prey(Animal):
             return False
         for plant in food_touched:
             if len(plant.berries) >= 1:
-                print(len(plant.berries))
                 self.touchFood = True
                 self.touchFoodSource = plant
                 return True
@@ -63,9 +62,7 @@ class Prey(Animal):
         # delete berry
         del random_berry
         # remove from berry list on host plant
-        print(self.touchFoodSource.berries)
         del self.touchFoodSource.berries[random_berry_idx]
-        print(self.touchFoodSource.berries)
         # update status
         self.status = "moving"
         self.statusLastUpdated = pygame.time.get_ticks()
@@ -73,7 +70,6 @@ class Prey(Animal):
         if self.hunger < 10:
             self.hunger += 1
         self.update_hunger_text()
-        print("finished eating")
     def move_random(self):
         # apply movement based on prior frame
         if self.prev_move_x == -1:
@@ -189,26 +185,20 @@ class Prey(Animal):
             self.touch_plant(plant_group)
             if self.touchFood:
                 if self.status == "eating":
-                    print(self.status," eating")
                     if (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
                         return
                     elif (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
-                        print(self.status," finish eating")
                         self.finish_eat()
                         move_x, move_y = self.move_random()
                 else:
-                    print(self.status," start eating")
                     self.start_eat()
                     return
             elif self.senseFood:
-                print(self.status," forage toward")
                 move_x, move_y = self.move_toward(self.senseFoodLoc)
             else:
-                print(self.status," forage random")
                 move_x, move_y = self.move_random()
         # if no collisions, move randomly
         else:
-            print(self.status," move random")
             move_x, move_y = self.move_random()
         ## MOVEMENT ##
         self.rect.move_ip(move_x*self.speed, move_y*self.speed)
