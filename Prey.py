@@ -31,6 +31,7 @@ class Prey(Animal):
             return False
         for plant in food_touched:
             if len(plant.berries) >= 1:
+                print(len(plant.berries))
                 self.touchFood = True
                 self.touchFoodSource = plant
                 return True
@@ -54,10 +55,17 @@ class Prey(Animal):
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
     def finish_eat(self):
         # remove berry
-        random_berry = random.choice(self.touchFoodSource.berries)
-        self.touchFoodSource.berries.remove(random_berry)
+        num_berries = len(self.touchFoodSource.berries)
+        random_berry_idx = random.choice(range(num_berries))
+        random_berry = self.touchFoodSource.berries[random_berry_idx]
+        # kill sprite
         random_berry.kill()
+        # delete berry
         del random_berry
+        # remove from berry list on host plant
+        print(self.touchFoodSource.berries)
+        del self.touchFoodSource.berries[random_berry_idx]
+        print(self.touchFoodSource.berries)
         # update status
         self.status = "moving"
         self.statusLastUpdated = pygame.time.get_ticks()

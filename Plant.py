@@ -3,12 +3,12 @@ import random
 from var import *
 
 class Plant(pygame.sprite.Sprite):
-    def __init__(self, color=COLOR_PLANT, size=4, age=1, growth=1, berries=[]):
+    def __init__(self, color=COLOR_PLANT, size=4, age=1, growth=1):
         self.color = color
         self.size = size
         self.age = age
         self.growth = growth
-        self.berries = berries
+        self.berries = []
         # create sprite
         super(Plant, self).__init__()
         # draw
@@ -27,6 +27,7 @@ class Plant(pygame.sprite.Sprite):
         add_berry_event = pygame.event.Event(ADDBERRY, plant=self)
         pygame.event.post(add_berry_event)
     def update(self):
+        print("berries on this plant", len(self.berries))
         # age in frames
         self.age += 1*PLAY_SPEED_MOD
         # grow (size)

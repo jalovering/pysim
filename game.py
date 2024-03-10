@@ -14,11 +14,11 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 surface = pygame.Surface((SCREEN_WIDTH-BUFFER, SCREEN_HEIGHT-BUFFER))
 pygame.display.set_caption('pysim') 
 
-# custom event - add prey
+# # custom event - add prey
 # ADDPREY = pygame.USEREVENT + 1
 # pygame.time.set_timer(ADDPREY, int(40000/PLAY_SPEED_MOD))
 
-# custom event - add plant
+# # custom event - add plant
 # ADDPLANT = pygame.USEREVENT + 2
 # pygame.time.set_timer(ADDPLANT, int(60000/PLAY_SPEED_MOD))
 
@@ -43,7 +43,7 @@ for i in range(1):
     all_group.add(new_prey)
 
 # initial plant object
-for i in range(8):
+for i in range(10):
     new_plant = Plant(size=10)
     plant_group.add(new_plant)
     all_group.add(new_plant)
@@ -88,7 +88,9 @@ while running:
             new_berry = Berry(
                 plant=event.plant,
                 )
+            print(event.plant)
             event.plant.berries.append(new_berry)
+            print(event.plant.berries)
             berry_group.add(new_berry)
             all_group.add(new_berry)
 
@@ -100,7 +102,7 @@ while running:
 
     # update berry locations
     berry_group.update()
-
+    print(berry_group)
     # update prey locations
     sensor_group.update(player,plant_group,prey_group)
 
