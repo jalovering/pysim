@@ -37,7 +37,7 @@ class Prey(Animal):
         return False
     def touch_prey(self, prey_group):
         prey_touched = pygame.sprite.spritecollide(self, prey_group, False)
-        self.touchFood = False
+        self.touchPrey = False
         if prey_touched == []:
             return False
         for prey in prey_touched:
@@ -173,7 +173,7 @@ class Prey(Animal):
             if self.touchPrey:
                 if random.choice([0, 1]) == 1:
                     self.birth_baby()
-                self.next_mate += PREY_MATE_INTERVAL
+                self.next_mate = self.age + PREY_MATE_INTERVAL
                 self.status = "moving"
                 move_x, move_y = self.move_random()
             elif self.sensePrey:

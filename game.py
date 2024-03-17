@@ -38,7 +38,7 @@ all_group.add(player)
 
 # initial prey object
 for i in range(2):
-    new_prey = Prey()
+    new_prey = Prey(color=(1,1,1))
     prey_group.add(new_prey)
     all_group.add(new_prey)
 
