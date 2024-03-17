@@ -37,7 +37,7 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-for i in range(4):
+for i in range(2):
     new_prey = Prey()
     prey_group.add(new_prey)
     all_group.add(new_prey)

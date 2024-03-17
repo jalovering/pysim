@@ -30,11 +30,15 @@ class Plant(pygame.sprite.Sprite):
         # age in frames
         self.age += 1*PLAY_SPEED_MOD
         # grow (size)
-        if self.size < PLANT_SIZE_MAX and self.age > self.next_growth: 
-            self.size += 1 * self.growth
-            self.draw()
-            self.next_growth += PLANT_GROWTH_INTERVAL
-        elif self.size >= PLANT_SIZE_MAX and self.age > self.next_growth and len(self.berries) < PLANT_BERRIES_MAX:
-            self.add_berry()
-            self.draw()
-            self.next_growth += PLANT_GROWTH_INTERVAL
+        if self.age > self.next_growth: 
+            if self.size < PLANT_SIZE_MAX: 
+                self.size += 1 * self.growth
+                self.draw()
+                self.next_growth += PLANT_GROWTH_INTERVAL
+            elif self.size >= PLANT_SIZE_MAX and len(self.berries) < PLANT_BERRIES_MAX:
+                self.add_berry()
+                self.draw()
+                self.next_growth += PLANT_GROWTH_INTERVAL
+            else:
+                self.next_growth += PLANT_GROWTH_INTERVAL
+                return
