@@ -2,10 +2,10 @@ import pygame
 from var import *
 
 class Sensor(pygame.sprite.Sprite):
-    def __init__(self, animal, color=COLOR_SENSOR, size=100):
+    def __init__(self, animal, color=COLOR_SENSOR):
         self.animal = animal
         self.color = color
-        self.size = size
+        self.size = self.animal.sense
         # create sprite
         super(Sensor, self).__init__()
         # draw

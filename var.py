@@ -32,6 +32,8 @@ BUFFER = 60
 PLAY_SPEED_MOD = 6
 # PLAY_SPEED_MOD = 1
 ## genes
+PREY_DEFAULT_SIZE = 10
+PREY_DEFAULT_SPEED = 1
 PREY_EAT_TIME = 1000 # takes 1000ms to eat
 PREY_HUNGER_INTERVAL = 600 # gain 1 hunger every 600 frames (10 seconds)
 PREY_DYING_TIME = 3000 # takes 1000ms to die

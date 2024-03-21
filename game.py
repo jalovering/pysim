@@ -128,7 +128,7 @@ while running:
         screen.blit(entity.surf, entity.rect)
     for entity in prey_group:
         screen.blit(entity.surf, entity.rect)
-        screen.blit(entity.text_surf, (entity.rect.x + 20, entity.rect.y + 10))
+        screen.blit(entity.text_surf, (entity.rect.x + 50, entity.rect.y + 10))
     for entity in plant_group:
         screen.blit(entity.surf, entity.rect)
     for entity in berry_group:
