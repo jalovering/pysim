@@ -5,6 +5,7 @@ from Prey import Prey
 from Sensor import Sensor
 from Berry import Berry
 from var import *
+import random
 
 # initialize pygame
 pygame.init()
@@ -42,9 +43,14 @@ for i in range(2):
     prey_group.add(new_prey)
     all_group.add(new_prey)
 
+for i in range(1):
+    new_prey = Prey(color=(1,1,1),size=15)
+    prey_group.add(new_prey)
+    all_group.add(new_prey)
+
 # initial plant object
 for i in range(6):
-    new_plant = Plant(size=10)
+    new_plant = Plant(size=random.randint(1,10))
     plant_group.add(new_plant)
     all_group.add(new_plant)
 
@@ -137,6 +143,7 @@ while running:
 
     ### TESTING START
     # print(pygame.time.get_ticks())
+    # print(plant_group)
     ### TESTING END
 
     # update display

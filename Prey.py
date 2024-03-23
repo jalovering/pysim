@@ -25,13 +25,18 @@ class Prey(Animal):
         self.hunger_interval = PREY_HUNGER_INTERVAL / ((self.size/PREY_DEFAULT_SIZE)*((self.speed/PLAY_SPEED_MOD)/PREY_DEFAULT_SPEED))
         self.next_hunger = self.hunger_interval
         self.next_mate = PREY_MATE_INTERVAL
+        self.canEatPlant = self.size >= 15
     def touch_plant(self, plant_group):
         food_touched = pygame.sprite.spritecollide(self, plant_group, False)
         self.touchFood = False
         if food_touched == []:
             return False
         for plant in food_touched:
-            if len(plant.berries) >= 1:
+            if self.canEatPlant:
+                self.touchFood = True
+                self.touchFoodSource = plant
+                return True
+            elif len(plant.berries) >= 1:
                 self.touchFood = True
                 self.touchFoodSource = plant
                 return True
@@ -54,16 +59,24 @@ class Prey(Animal):
     def update_hunger_text(self):
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
     def finish_eat(self):
-        # remove berry
-        num_berries = len(self.touchFoodSource.berries)
-        random_berry_idx = random.choice(range(num_berries))
-        random_berry = self.touchFoodSource.berries[random_berry_idx]
-        # kill sprite
-        random_berry.kill()
-        # delete berry
-        del random_berry
-        # remove from berry list on host plant
-        del self.touchFoodSource.berries[random_berry_idx]
+        if len(self.touchFoodSource.berries) >= 1:
+            # remove berry
+            num_berries = len(self.touchFoodSource.berries)
+            random_berry_idx = random.choice(range(num_berries))
+            random_berry = self.touchFoodSource.berries[random_berry_idx]
+            # kill sprite
+            random_berry.kill()
+            # delete berry
+            del random_berry
+            # remove from berry list on host plant
+            del self.touchFoodSource.berries[random_berry_idx]
+        else:
+            self.touchFoodSource.size -= 1
+            if self.touchFoodSource.size == 0:
+                # kill sprite
+                self.touchFoodSource.kill()
+                # delete plant
+                del self.touchFoodSource
         # update status
         self.status = "moving"
         self.statusLastUpdated = pygame.time.get_ticks()
@@ -160,8 +173,10 @@ class Prey(Animal):
         # courting
         if self.age > self.next_mate and self.hunger >= 8:
             self.status = "courting"
+            self.statusLastUpdated = pygame.time.get_ticks()
         elif self.hunger < 10 and self.status != "eating":
             self.status = "foraging"
+            self.statusLastUpdated = pygame.time.get_ticks()
         ## COLLISION-BASED ACTIONS ##
         # player collision
         if self.sensePlayer:
@@ -186,6 +201,8 @@ class Prey(Animal):
             self.touch_plant(plant_group)
             if self.touchFood:
                 if self.status == "eating":
+                    # if self.canEatPlant:
+                    # if len(self.touchFoodSource.berries) >= 1:
                     if (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
                         return
                     elif (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
