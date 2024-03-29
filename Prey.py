@@ -4,25 +4,37 @@ from var import *
 import random
 
 class Prey(Animal):
-    def __init__(self, color=COLOR_PREY, size=PREY_DEFAULT_SIZE, speed=PREY_DEFAULT_SPEED, status="moving", statusLastUpdated=0, hunger=10, age=0, sense=100, sensor=None, birthLoc=()):
-        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor, birthLoc)
+    def __init__(self, color=COLOR_PREY, size=PREY_DEFAULT_SIZE, speed=PREY_DEFAULT_SPEED, status="moving", statusLastUpdated=0, hunger=10, age=0, sense=100, sensor=None, parent=None):
+        super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor, parent)
         self.surf = pygame.Surface((self.size*1.5, self.size))
         self.surf.fill(self.color)
-        if birthLoc == ():
+        # if there is no parent
+        if self.parent == None:
             self.rect = self.surf.get_rect(
                 center=(
                     random.randint(0+BUFFER, SCREEN_WIDTH-BUFFER),
                     random.randint(0+BUFFER, SCREEN_HEIGHT-BUFFER),
                 )
             )
+        # if there is a parent
         else:
-            self.rect = self.surf.get_rect(center=birthLoc)
+            self.rect = self.surf.get_rect(center=self.parent.rect.center)
+            self.size = self.inherit_quantitative_trait("size", self.parent.size)
+            self.speed = self.inherit_quantitative_trait("speed", self.parent.speed)
+            self.sense = self.inherit_quantitative_trait("sense", self.parent.sense)
+            print("new traits")
+            print("size:", self.parent.size, self.size)
+            print("speed:", self.parent.speed, self.speed)
+            print("sense:", self.parent.sense, self.sense)
+        # setup hunger text   
         self.text_font_hunger = pygame.font.Font(None, 16)
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
+        # create sensor
         self.create_sensor()
+        # set up initial settings
         self.prev_move_x = 0
         self.prev_move_y = 0
-        self.hunger_interval = PREY_HUNGER_INTERVAL / ((self.size/PREY_DEFAULT_SIZE)*((self.speed/PLAY_SPEED_MOD)/PREY_DEFAULT_SPEED))
+        self.hunger_interval = PREY_HUNGER_INTERVAL / ((self.size/PREY_DEFAULT_SIZE)*((self.speed)/PREY_DEFAULT_SPEED))
         self.next_hunger = self.hunger_interval
         self.next_mate = PREY_MATE_INTERVAL
         self.canEatPlant = self.size >= 15
@@ -146,7 +158,7 @@ class Prey(Animal):
         self.kill()
         del self
     def birth_baby(self):
-        add_prey_baby_event = pygame.event.Event(ADDPREYBABY, birthLoc=self.rect.center)
+        add_prey_baby_event = pygame.event.Event(ADDPREYBABY, parent=self)
         pygame.event.post(add_prey_baby_event)
     def update(self,plant_group,prey_group):
         ## DEATH ##
@@ -219,7 +231,7 @@ class Prey(Animal):
         else:
             move_x, move_y = self.move_random()
         ## MOVEMENT ##
-        self.rect.move_ip(move_x*self.speed, move_y*self.speed)
+        self.rect.move_ip(move_x*self.speed*PLAY_SPEED_MOD, move_y*self.speed*PLAY_SPEED_MOD)
         # keep in bounds
         if self.rect.left < BUFFER/2:
             self.rect.left = BUFFER/2

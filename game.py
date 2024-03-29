@@ -19,9 +19,9 @@ pygame.display.set_caption('pysim')
 # ADDPREY = pygame.USEREVENT + 1
 # pygame.time.set_timer(ADDPREY, int(40000/PLAY_SPEED_MOD))
 
-# # custom event - add plant
-# ADDPLANT = pygame.USEREVENT + 2
-# pygame.time.set_timer(ADDPLANT, int(60000/PLAY_SPEED_MOD))
+# custom event - add plant
+ADDPLANT = pygame.USEREVENT + 2
+pygame.time.set_timer(ADDPLANT, int(240000/PLAY_SPEED_MOD))
 
 # custom event - add berry
 # ADDBERRY = pygame.USEREVENT + 3
@@ -38,7 +38,7 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-for i in range(2):
+for i in range(10):
     new_prey = Prey(color=(1,1,1))
     prey_group.add(new_prey)
     all_group.add(new_prey)
@@ -49,7 +49,7 @@ for i in range(1):
     all_group.add(new_prey)
 
 # initial plant object
-for i in range(6):
+for i in range(20):
     new_plant = Plant(size=random.randint(1,10))
     plant_group.add(new_plant)
     all_group.add(new_plant)
@@ -71,7 +71,7 @@ while running:
             all_group.add(new_prey)
         # add new baby prey
         elif event.type == ADDPREYBABY:
-            new_prey = Prey(birthLoc=event.birthLoc)
+            new_prey = Prey(parent=event.parent)
             prey_group.add(new_prey)
             all_group.add(new_prey)
         # add new sensor
@@ -85,7 +85,6 @@ while running:
         # add new plant
         elif event.type == ADDPLANT:
             new_plant = Plant(
-                berries=[]
                 )
             plant_group.add(new_plant)
             all_group.add(new_plant)
