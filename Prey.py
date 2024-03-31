@@ -92,6 +92,7 @@ class Prey(Animal):
         # update status
         self.status = "moving"
         self.statusLastUpdated = pygame.time.get_ticks()
+        self.senseFood = False
         # update hunger
         if self.hunger < 10:
             self.hunger += 1

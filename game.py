@@ -23,9 +23,6 @@ pygame.display.set_caption('pysim')
 ADDPLANT = pygame.USEREVENT + 2
 pygame.time.set_timer(ADDPLANT, int(240000/PLAY_SPEED_MOD))
 
-# custom event - add berry
-# ADDBERRY = pygame.USEREVENT + 3
-
 # sprite groups
 prey_group = pygame.sprite.Group()
 sensor_group = pygame.sprite.Group()
@@ -43,10 +40,10 @@ for i in range(10):
     prey_group.add(new_prey)
     all_group.add(new_prey)
 
-for i in range(1):
-    new_prey = Prey(color=(1,1,1),size=15)
-    prey_group.add(new_prey)
-    all_group.add(new_prey)
+# for i in range(1):
+#     new_prey = Prey(color=(1,1,1),size=15)
+#     prey_group.add(new_prey)
+#     all_group.add(new_prey)
 
 # initial plant object
 for i in range(20):
@@ -71,7 +68,9 @@ while running:
             all_group.add(new_prey)
         # add new baby prey
         elif event.type == ADDPREYBABY:
-            new_prey = Prey(parent=event.parent)
+            new_prey = Prey(
+                parent=event.parent
+                )
             prey_group.add(new_prey)
             all_group.add(new_prey)
         # add new sensor
