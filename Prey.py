@@ -36,7 +36,8 @@ class Prey(Animal):
         self.prev_move_y = 0
         self.hunger_interval = PREY_HUNGER_INTERVAL / ((self.size/PREY_DEFAULT_SIZE)*((self.speed)/PREY_DEFAULT_SPEED)*PLAY_SPEED_MOD)
         self.next_hunger = self.hunger_interval
-        self.next_mate = PREY_MATE_INTERVAL / PLAY_SPEED_MOD
+        self.mate_interval = PREY_MATE_INTERVAL / PLAY_SPEED_MOD
+        self.next_mate = self.mate_interval
         self.canEatPlant = self.size >= 15
     def touch_plant(self, plant_group):
         food_touched = pygame.sprite.spritecollide(self, plant_group, False)
@@ -162,6 +163,7 @@ class Prey(Animal):
         add_prey_baby_event = pygame.event.Event(ADDPREYBABY, parent=self)
         pygame.event.post(add_prey_baby_event)
     def update(self,plant_group,prey_group):
+        print(int(self.age),int(self.next_mate))
         ## DEATH ##
         if self.hunger <= 0:
             if self.status == "dying" and (self.statusLastUpdated + (PREY_DYING_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks():
@@ -202,7 +204,7 @@ class Prey(Animal):
             if self.touchPrey:
                 if random.choice([0, 1]) == 1:
                     self.birth_baby()
-                self.next_mate = self.age + PREY_MATE_INTERVAL
+                self.next_mate = self.age + self.mate_interval 
                 self.status = "moving"
                 move_x, move_y = self.move_random()
             elif self.sensePrey:
