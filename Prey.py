@@ -34,9 +34,9 @@ class Prey(Animal):
         # set up initial settings
         self.prev_move_x = 0
         self.prev_move_y = 0
-        self.hunger_interval = PREY_HUNGER_INTERVAL / ((self.size/PREY_DEFAULT_SIZE)*((self.speed)/PREY_DEFAULT_SPEED))
+        self.hunger_interval = PREY_HUNGER_INTERVAL / ((self.size/PREY_DEFAULT_SIZE)*((self.speed)/PREY_DEFAULT_SPEED)*PLAY_SPEED_MOD)
         self.next_hunger = self.hunger_interval
-        self.next_mate = PREY_MATE_INTERVAL
+        self.next_mate = PREY_MATE_INTERVAL / PLAY_SPEED_MOD
         self.canEatPlant = self.size >= 15
     def touch_plant(self, plant_group):
         food_touched = pygame.sprite.spritecollide(self, plant_group, False)
@@ -174,8 +174,8 @@ class Prey(Animal):
                 self.start_dying()
                 return
         ## TIME-BASED UPDATES ##
-        # age in frames
-        self.age += 1*PLAY_SPEED_MOD
+        # age in ms
+        self.age += (1000/FPS)
         # hunger
         if self.age > self.next_hunger: 
             self.hunger -= 1
@@ -213,8 +213,6 @@ class Prey(Animal):
             self.touch_plant(plant_group)
             if self.touchFood:
                 if self.status == "eating":
-                    # if self.canEatPlant:
-                    # if len(self.touchFoodSource.berries) >= 1:
                     if (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
                         return
                     elif (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
