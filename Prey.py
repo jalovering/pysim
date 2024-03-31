@@ -12,8 +12,8 @@ class Prey(Animal):
         if self.parent == None:
             self.rect = self.surf.get_rect(
                 center=(
-                    random.randint(0+BUFFER, SCREEN_WIDTH-BUFFER),
-                    random.randint(0+BUFFER, SCREEN_HEIGHT-BUFFER),
+                    random.randint(BUFFER, SURFACE_MAIN_WIDTH+BUFFER),
+                    random.randint(BUFFER, SCREEN_HEIGHT-BUFFER),
                 )
             )
         # if there is a parent
@@ -232,14 +232,14 @@ class Prey(Animal):
         ## MOVEMENT ##
         self.rect.move_ip(move_x*self.speed*PLAY_SPEED_MOD, move_y*self.speed*PLAY_SPEED_MOD)
         # keep in bounds
-        if self.rect.left < BUFFER/2:
-            self.rect.left = BUFFER/2
-        if self.rect.right > SCREEN_WIDTH-BUFFER/2:
-            self.rect.right = SCREEN_WIDTH-BUFFER/2
-        if self.rect.top <= BUFFER/2:
-            self.rect.top = BUFFER/2
-        if self.rect.bottom >= SCREEN_HEIGHT-BUFFER/2:
-            self.rect.bottom = SCREEN_HEIGHT-BUFFER/2
+        if self.rect.left < BUFFER:
+            self.rect.left = BUFFER
+        if self.rect.right > SURFACE_MAIN_WIDTH+BUFFER:
+            self.rect.right = SURFACE_MAIN_WIDTH+BUFFER
+        if self.rect.top <= BUFFER:
+            self.rect.top = BUFFER
+        if self.rect.bottom >= SCREEN_HEIGHT-BUFFER:
+            self.rect.bottom = SCREEN_HEIGHT-BUFFER
         # save movement for next frame
         self.prev_move_x = move_x
         self.prev_move_y = move_y

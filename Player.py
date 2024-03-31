@@ -25,11 +25,11 @@ class Player(Creature):
         if pressed_keys[K_RIGHT]:
             self.rect.move_ip(1*self.speed, 0)
         # keep in bounds
-        if self.rect.left < BUFFER/2:
-            self.rect.left = BUFFER/2
-        if self.rect.right > SCREEN_WIDTH-BUFFER/2:
-            self.rect.right = SCREEN_WIDTH-BUFFER/2
-        if self.rect.top <= BUFFER/2 - self.size:
-            self.rect.top = BUFFER/2 - self.size
-        if self.rect.bottom >= SCREEN_HEIGHT-BUFFER/2:
-            self.rect.bottom = SCREEN_HEIGHT-BUFFER/2
+        if self.rect.left < BUFFER:
+            self.rect.left = BUFFER
+        if self.rect.right > SURFACE_MAIN_WIDTH+BUFFER:
+            self.rect.right = SURFACE_MAIN_WIDTH+BUFFER
+        if self.rect.top <= BUFFER - self.size:
+            self.rect.top = BUFFER - self.size
+        if self.rect.bottom >= SCREEN_HEIGHT-BUFFER:
+            self.rect.bottom = SCREEN_HEIGHT-BUFFER

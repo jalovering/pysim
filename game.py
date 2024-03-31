@@ -12,7 +12,8 @@ pygame.init()
 
 # screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) 
-surface = pygame.Surface((SCREEN_WIDTH-BUFFER, SCREEN_HEIGHT-BUFFER))
+surface = pygame.Surface((SURFACE_MAIN_WIDTH, SCREEN_HEIGHT-(BUFFER*2)))
+surface_sidebar = pygame.Surface((SURFACE_SIDEBAR_WIDTH, SCREEN_HEIGHT-(BUFFER*2)))
 pygame.display.set_caption('pysim') 
 
 # # custom event - add prey
@@ -35,7 +36,7 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-for i in range(10):
+for i in range(8):
     new_prey = Prey(color=(1,1,1))
     prey_group.add(new_prey)
     all_group.add(new_prey)
@@ -46,7 +47,7 @@ for i in range(10):
 #     all_group.add(new_prey)
 
 # initial plant object
-for i in range(20):
+for i in range(10):
     new_plant = Plant(size=random.randint(1,10))
     plant_group.add(new_plant)
     all_group.add(new_plant)
@@ -117,13 +118,9 @@ while running:
     # reset screen and surface
     screen.fill(COLOR_BG) 
     surface.fill(COLOR_SURFACE)
-    screen.blit(
-            surface,
-            (
-                (SCREEN_WIDTH-surface.get_width())/2,
-                (SCREEN_HEIGHT-surface.get_height())/2
-            )
-    )
+    surface_sidebar.fill(COLOR_SURFACE)
+    screen.blit(surface,(BUFFER,BUFFER))
+    screen.blit(surface_sidebar,((BUFFER*2)+SURFACE_MAIN_WIDTH,BUFFER))
 
     # draw sprites
     # for entity in all_group:

@@ -15,9 +15,9 @@ class Plant(pygame.sprite.Sprite):
         self.draw()
         self.rect = self.surf.get_rect(
             center=(
-                random.randint(0+BUFFER, SCREEN_WIDTH-BUFFER),
-                random.randint(0+BUFFER, SCREEN_HEIGHT-BUFFER),
-            )
+                    random.randint(BUFFER, SURFACE_MAIN_WIDTH+BUFFER),
+                    random.randint(BUFFER, SCREEN_HEIGHT-BUFFER),
+                )
         )
         self.growth_interval = PLANT_GROWTH_INTERVAL / PLAY_SPEED_MOD
         self.next_growth = self.growth_interval
