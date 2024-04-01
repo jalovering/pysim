@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 from Player import Player
 from Plant import Plant
 from Prey import Prey
@@ -6,6 +7,7 @@ from Sensor import Sensor
 from Berry import Berry
 from var import *
 import random
+import sidebar
 
 # initialize pygame
 pygame.init()
@@ -52,6 +54,9 @@ for i in range(10):
     plant_group.add(new_plant)
     all_group.add(new_plant)
 
+# sidebar
+start_index = 0
+
 # game loop
 clock = pygame.time.Clock()
 running = True
@@ -62,6 +67,12 @@ while running:
         # QUIT - window close      
         if event.type == pygame.QUIT: 
             running = False
+        # sidebar scroll
+        elif event.type == MOUSEBUTTONDOWN:
+            if event.button == 4:  # scroll up
+                start_index = sidebar.scroll(-SIDEBAR_SCROLL_SPEED, prey_group.sprites(), start_index)
+            elif event.button == 5:  # scroll down
+                start_index = sidebar.scroll(SIDEBAR_SCROLL_SPEED, prey_group.sprites(), start_index)
         # add new prey
         elif event.type == ADDPREY:
             new_prey = Prey()
@@ -118,13 +129,11 @@ while running:
     # reset screen and surface
     screen.fill(COLOR_BG) 
     surface.fill(COLOR_SURFACE)
-    surface_sidebar.fill(COLOR_SURFACE)
+    surface_sidebar.fill(COLOR_SURFACE_SIDEBAR)
     screen.blit(surface,(BUFFER,BUFFER))
     screen.blit(surface_sidebar,((BUFFER*2)+SURFACE_MAIN_WIDTH,BUFFER))
 
     # draw sprites
-    # for entity in all_group:
-    #     screen.blit(entity.surf, entity.rect)
     for entity in sensor_group:
         screen.blit(entity.surf, entity.rect)
     for entity in prey_group:
@@ -135,6 +144,9 @@ while running:
     for entity in berry_group:
         screen.blit(entity.surf, entity.rect)
     screen.blit(player.surf, player.rect)
+
+    # draw sidebar
+    sidebar.write_sidebar(screen, prey_group.sprites(), start_index)
 
     ### TESTING START
     # print(pygame.time.get_ticks())

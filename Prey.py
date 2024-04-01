@@ -22,10 +22,6 @@ class Prey(Animal):
             self.size = self.inherit_quantitative_trait("size", self.parent.size)
             self.speed = self.inherit_quantitative_trait("speed", self.parent.speed)
             self.sense = self.inherit_quantitative_trait("sense", self.parent.sense)
-            print("new traits")
-            print("size:", self.parent.size, self.size)
-            print("speed:", self.parent.speed, self.speed)
-            print("sense:", self.parent.sense, self.sense)
         # setup hunger text   
         self.text_font_hunger = pygame.font.Font(None, 16)
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
@@ -163,7 +159,6 @@ class Prey(Animal):
         add_prey_baby_event = pygame.event.Event(ADDPREYBABY, parent=self)
         pygame.event.post(add_prey_baby_event)
     def update(self,plant_group,prey_group):
-        print(int(self.age),int(self.next_mate))
         ## DEATH ##
         if self.hunger <= 0:
             if self.status == "dying" and (self.statusLastUpdated + (PREY_DYING_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks():
