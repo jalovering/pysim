@@ -220,7 +220,11 @@ class Prey(Animal):
                     self.start_eat()
                     return
             elif self.senseFood:
-                move_x, move_y = self.move_toward(self.senseFoodLoc)
+                if len(self.senseFoodSource.berries) > 0:
+                    move_x, move_y = self.move_toward(self.senseFoodSource.rect.center)
+                else:
+                    self.senseFood = False
+                    move_x, move_y = self.move_random()
             else:
                 move_x, move_y = self.move_random()
         # if no collisions, move randomly

@@ -31,11 +31,11 @@ class Sensor(pygame.sprite.Sprite):
         for plant in food_sensed:
             if self.animal.canEatPlant:
                 self.animal.senseFood = True
-                self.animal.senseFoodLoc = plant.rect.center
+                self.animal.senseFoodSource = plant
                 return True
             elif len(plant.berries) >= 1:
                 self.animal.senseFood = True
-                self.animal.senseFoodLoc = plant.rect.center
+                self.animal.senseFoodSource = plant
                 return True
         return False
     def sense_prey(self, prey_group):

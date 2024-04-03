@@ -12,13 +12,13 @@ class Animal(Creature):
         self.sensePlayer = False
         self.sensePlayerLoc = ()
         self.senseFood = False
-        self.senseFoodLoc = ()
+        self.senseFoodSource = None
         self.touchFood = False
-        self.touchFoodSource = "n/a"
+        self.touchFoodSource = None
         self.sensePrey = False
         self.sensePreyLoc = ()
         self.touchPrey = False
-        self.touchPreySource = "n/a"
+        self.touchPreySource = None
     def create_sensor(self):
         add_sensor_event = pygame.event.Event(ADDSENSOR, animal=self)
         pygame.event.post(add_sensor_event)
