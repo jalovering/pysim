@@ -155,4 +155,4 @@ while running:
 
     # update display
     pygame.display.flip()
-    clock.tick(FPS)
+    clock.tick(FPS*FPS_MOD)

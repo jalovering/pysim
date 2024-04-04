@@ -96,17 +96,17 @@ class Prey(Animal):
         self.update_hunger_text()
     def move_random(self):
         # apply movement based on prior frame
-        if self.prev_move_x == -1:
+        if round(self.prev_move_x) == -1:
             move_x = random.choices([-1,0,1],[0.95,0.04,0.01])[0]
-        if self.prev_move_x == 0:
+        if round(self.prev_move_x) == 0:
             move_x = random.randint(-1, 1)
-        if self.prev_move_x == 1:
+        if round(self.prev_move_x) == 1:
             move_x = random.choices([-1,0,1],[0.01,0.04,0.95])[0]
-        if self.prev_move_y == -1:
+        if round(self.prev_move_y) == -1:
             move_y = random.choices([-1,0,1],[0.95,0.04,0.01])[0]
-        if self.prev_move_y == 0:
+        if round(self.prev_move_y) == 0:
             move_y = random.randint(-1, 1)
-        if self.prev_move_y == 1:
+        if round(self.prev_move_y) == 1:
             move_y = random.choices([-1,0,1],[0.01,0.04,0.95])[0]
         return move_x, move_y
     def move_away(self,loc):
@@ -126,20 +126,25 @@ class Prey(Animal):
             move_y = 0
         return move_x, move_y
     def move_toward(self,loc):
-        diff_x = self.rect.center[0] - loc[0]
-        diff_y = self.rect.center[1] - loc[1]
-        if(diff_x > 0):
+        diff_x = loc[0] - self.rect.center[0]
+        diff_y = loc[1] - self.rect.center[1]
+        if diff_x < 0:
             move_x = -1
-        elif(diff_x < 0):
+        elif diff_x > 0:
             move_x = 1
         else:
             move_x = 0
-        if(diff_y > 0):
+        if diff_y < 0:
             move_y = -1
-        elif(diff_y < 0):
+        elif diff_y > 0:
             move_y = 1
         else:
             move_y = 0
+        # correct overshooting when move speed is high
+        if (move_x*self.speed*PLAY_SPEED_MOD > diff_x and diff_x > 0) or (move_x*self.speed*PLAY_SPEED_MOD < diff_x and diff_x < 0):
+            move_x = round(diff_x/(self.speed*PLAY_SPEED_MOD),2)
+        if (move_y*self.speed*PLAY_SPEED_MOD > diff_y and diff_y > 0) or (move_y*self.speed*PLAY_SPEED_MOD < diff_y and diff_y < 0):
+            move_y = round(diff_y/(self.speed*PLAY_SPEED_MOD),2)
         return move_x, move_y
     def start_dying(self):
         self.status = "dying"
@@ -231,7 +236,7 @@ class Prey(Animal):
         else:
             move_x, move_y = self.move_random()
         ## MOVEMENT ##
-        self.rect.move_ip(move_x*self.speed*PLAY_SPEED_MOD, move_y*self.speed*PLAY_SPEED_MOD)
+        self.rect.move_ip(round(move_x*self.speed*PLAY_SPEED_MOD), round(move_y*self.speed*PLAY_SPEED_MOD))
         # keep in bounds
         if self.rect.left < BUFFER:
             self.rect.left = BUFFER
