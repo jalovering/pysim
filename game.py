@@ -8,6 +8,7 @@ from Berry import Berry
 from var import *
 import random
 import sidebar
+import analysis
 
 # initialize pygame
 pygame.init()
@@ -145,6 +146,9 @@ while running:
         screen.blit(entity.surf, entity.rect)
     screen.blit(player.surf, player.rect)
 
+    # prep data
+    prey_stats = analysis.create_prey_stats(prey_group.sprites())
+    
     # draw sidebar
     sidebar.write_sidebar(screen, prey_group.sprites(), start_index)
 
