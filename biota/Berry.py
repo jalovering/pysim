@@ -1,7 +1,7 @@
 import pygame
 import random
-from var import *
 import math
+from var import *
 
 class Berry(pygame.sprite.Sprite):
     def __init__(self, plant, color=COLOR_BERRY, size=1):

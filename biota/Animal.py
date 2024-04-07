@@ -1,7 +1,7 @@
 import pygame
-from Creature import Creature
-from var import *
 import numpy as np
+from biota.Creature import Creature
+from var import *
 
 class Animal(Creature):
     def __init__(self, color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor, parent):

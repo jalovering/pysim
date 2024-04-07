@@ -1,14 +1,14 @@
 import pygame
 from pygame.locals import *
-from Player import Player
-from Plant import Plant
-from Prey import Prey
-from Sensor import Sensor
-from Berry import Berry
+from biota.Player import Player
+from biota.Plant import Plant
+from biota.Prey import Prey
+from biota.Sensor import Sensor
+from biota.Berry import Berry
 from var import *
 import random
-import sidebar
-import analysis
+import analysis.sidebar as sidebar
+import analysis.analysis as analysis
 
 # initialize pygame
 pygame.init()

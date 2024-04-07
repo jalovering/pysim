@@ -1,12 +1,12 @@
 import pygame
-from Creature import Creature
-from var import *
 from pygame.locals import (
     K_UP,
     K_DOWN,
     K_LEFT,
     K_RIGHT,
 )
+from biota.Creature import Creature
+from var import *
 
 class Player(Creature):
     def __init__(self, color=COLOR_PLAYER, size=20, speed=2, status="moving", statusLastUpdated=0, hunger=0, age=0):

@@ -1,7 +1,7 @@
 import pygame
-from Animal import Animal
-from var import *
 import random
+from biota.Animal import Animal
+from var import *
 
 class Prey(Animal):
     def __init__(self, color=COLOR_PREY, size=PREY_DEFAULT_SIZE, speed=PREY_DEFAULT_SPEED, status="moving", statusLastUpdated=0, hunger=10, age=0, sense=100, sensor=None, parent=None):
