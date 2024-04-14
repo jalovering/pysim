@@ -1,5 +1,6 @@
 import numpy as np
 
+# create array of prey stats
 def create_prey_stats(prey_sprites):
     num_prey = len(prey_sprites)
     prey_stats = np.zeros((num_prey, 3))

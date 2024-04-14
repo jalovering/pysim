@@ -16,7 +16,8 @@ pygame.init()
 # screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) 
 surface = pygame.Surface((SURFACE_MAIN_WIDTH, SCREEN_HEIGHT-(BUFFER*2)))
-surface_sidebar = pygame.Surface((SURFACE_SIDEBAR_WIDTH, SCREEN_HEIGHT-(BUFFER*2)))
+surface_sidebar_upper = pygame.Surface((SURFACE_SIDEBAR_WIDTH, (SCREEN_HEIGHT*0.4)-(BUFFER*1.5)))
+surface_sidebar_lower = pygame.Surface((SURFACE_SIDEBAR_WIDTH, (SCREEN_HEIGHT*0.6)-(BUFFER*1.5)))
 pygame.display.set_caption('pysim') 
 
 # # custom event - add prey
@@ -39,7 +40,7 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-for i in range(8):
+for i in range(20):
     new_prey = Prey(color=(1,1,1))
     prey_group.add(new_prey)
     all_group.add(new_prey)
@@ -55,7 +56,8 @@ for i in range(10):
     plant_group.add(new_plant)
     all_group.add(new_plant)
 
-# sidebar
+# index of first displayed prey in list
+# this changes as you scroll
 start_index = 0
 
 # game loop
@@ -68,7 +70,7 @@ while running:
         # QUIT - window close      
         if event.type == pygame.QUIT: 
             running = False
-        # sidebar scroll
+        # lower sidebar scroll
         elif event.type == MOUSEBUTTONDOWN:
             if event.button == 4:  # scroll up
                 start_index = sidebar.scroll(-SIDEBAR_SCROLL_SPEED, prey_group.sprites(), start_index)
@@ -130,9 +132,11 @@ while running:
     # reset screen and surface
     screen.fill(COLOR_BG) 
     surface.fill(COLOR_SURFACE)
-    surface_sidebar.fill(COLOR_SURFACE_SIDEBAR)
+    surface_sidebar_lower.fill(COLOR_SURFACE_SIDEBAR)
+    surface_sidebar_upper.fill(COLOR_SURFACE_SIDEBAR)
     screen.blit(surface,(BUFFER,BUFFER))
-    screen.blit(surface_sidebar,((BUFFER*2)+SURFACE_MAIN_WIDTH,BUFFER))
+    screen.blit(surface_sidebar_upper,((BUFFER*2)+SURFACE_MAIN_WIDTH,BUFFER))
+    screen.blit(surface_sidebar_lower,((BUFFER*2)+SURFACE_MAIN_WIDTH,(SCREEN_HEIGHT*0.4)-(BUFFER*1.5)+(BUFFER*2)))
 
     # draw sprites
     for entity in sensor_group:
@@ -149,9 +153,12 @@ while running:
     # prep data
     prey_stats = analysis.create_prey_stats(prey_group.sprites())
     
-    # draw sidebar
-    sidebar.write_sidebar(screen, prey_group.sprites(), start_index)
-
+    ## draw sidebar
+    # datavis
+    ''' todo '''
+    # list of sprites
+    sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
+    
     ### TESTING START
     # print(pygame.time.get_ticks())
     # print(plant_group)

@@ -1,9 +1,9 @@
 import pygame
 from var import *
 
-# draw text on sidebar
-def write_sidebar(screen, prey_list, start_index):
-    y = BUFFER + 10
+# draw text on lower sidebar
+def write_sidebar_lower(screen, prey_list, start_index):
+    y = (SCREEN_HEIGHT*0.4)-(BUFFER*1.5)+(BUFFER*2) + 10
     if start_index < 0:
         start_index = 0
     for i, spr in enumerate(prey_list[start_index:]):
@@ -17,11 +17,14 @@ def write_sidebar(screen, prey_list, start_index):
         if y > SCREEN_HEIGHT-BUFFER:
             break
 
-# Function to handle scrolling
+# handle scrolling on lower sidebar
 def scroll(delta, prey_list, start_index):
     start_index += delta
+    max_line_count = round((((SCREEN_HEIGHT*0.6)-(BUFFER*1.5)) // SIDEBAR_LINE_HEIGHT))
+    # cant scroll past zero
     if start_index < 0:
         start_index = 0
-    elif start_index > len(prey_list) - ((SCREEN_HEIGHT-(BUFFER*2)) // SIDEBAR_LINE_HEIGHT):
-        start_index = len(prey_list) - ((SCREEN_HEIGHT-(BUFFER*2)) // SIDEBAR_LINE_HEIGHT)
+    # cant scroll past the end
+    elif start_index > len(prey_list) - max_line_count:
+        start_index = len(prey_list) - max_line_count
     return start_index
