@@ -20,6 +20,11 @@ surface_sidebar_upper = pygame.Surface((SURFACE_SIDEBAR_WIDTH, (SCREEN_HEIGHT*0.
 surface_sidebar_lower = pygame.Surface((SURFACE_SIDEBAR_WIDTH, (SCREEN_HEIGHT*0.6)-(BUFFER*1.5)))
 pygame.display.set_caption('pysim') 
 
+surface_sidebar_upper_x = (BUFFER*2)+SURFACE_MAIN_WIDTH
+surface_sidebar_upper_y = BUFFER
+surface_sidebar_lower_x = (BUFFER*2)+SURFACE_MAIN_WIDTH
+surface_sidebar_lower_y = (SCREEN_HEIGHT*0.4)-(BUFFER*1.5)+(BUFFER*2)
+
 # # custom event - add prey
 # ADDPREY = pygame.USEREVENT + 1
 # pygame.time.set_timer(ADDPREY, int(40000/PLAY_SPEED_MOD))
@@ -40,8 +45,9 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-for i in range(20):
-    new_prey = Prey(color=(1,1,1))
+for i in range(8):
+    new_prey = Prey(color=(1,1,1), size=random.randint(5,20))
+    # new_prey = Prey(color=(1,1,1))
     prey_group.add(new_prey)
     all_group.add(new_prey)
 
@@ -135,8 +141,8 @@ while running:
     surface_sidebar_lower.fill(COLOR_SURFACE_SIDEBAR)
     surface_sidebar_upper.fill(COLOR_SURFACE_SIDEBAR)
     screen.blit(surface,(BUFFER,BUFFER))
-    screen.blit(surface_sidebar_upper,((BUFFER*2)+SURFACE_MAIN_WIDTH,BUFFER))
-    screen.blit(surface_sidebar_lower,((BUFFER*2)+SURFACE_MAIN_WIDTH,(SCREEN_HEIGHT*0.4)-(BUFFER*1.5)+(BUFFER*2)))
+    screen.blit(surface_sidebar_upper,(surface_sidebar_upper_x, surface_sidebar_upper_y))
+    screen.blit(surface_sidebar_lower,(surface_sidebar_lower_x, surface_sidebar_lower_y))
 
     # draw sprites
     for entity in sensor_group:
@@ -152,16 +158,19 @@ while running:
 
     # prep data
     prey_stats = analysis.create_prey_stats(prey_group.sprites())
-    
+    size_dist = analysis.create_frequency_dist(prey_stats[:, 0], "size", SIZE_MIN, SIZE_MAX, SIZE_DECIMALS)
+
     ## draw sidebar
     # datavis
-    ''' todo '''
+    sidebar.create_bar_chart(screen, size_dist, surface_sidebar_upper_x, surface_sidebar_upper_y)
     # list of sprites
     sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
     
     ### TESTING START
     # print(pygame.time.get_ticks())
     # print(plant_group)
+    # print(prey_stats[:, 0])
+
     ### TESTING END
 
     # update display

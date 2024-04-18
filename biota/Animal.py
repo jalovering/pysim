@@ -24,25 +24,29 @@ class Animal(Creature):
         pygame.event.post(add_sensor_event)
     def inherit_quantitative_trait(self, trait, parent_value):
         if trait == "size": # int 5-20
-            minValue = 5
-            maxValue = 20
+            minValue = SIZE_MIN
+            maxValue = SIZE_MAX
             scale = 3
-            decimals = None
+            decimals = SIZE_DECIMALS
         elif trait == "speed": # float 0.5-5
-            minValue = 0.5
-            maxValue = 5
+            minValue = SPEED_MIN
+            maxValue = SPEED_MAX
             scale = 8
-            decimals = 1
+            decimals = SPEED_DECIMALS
         elif trait == "sense": # int 50-300
-            minValue = 50
-            maxValue = 300
+            minValue = SENSE_MIN
+            maxValue = SENSE_MAX
             scale = 1/5
-            decimals = None
+            decimals = SENSE_DECIMALS
+        if decimals is None:
+            actualMax = maxValue-1
+        else:
+            actualMax = maxValue-(1/(10^decimals))
         # exponential distribution
         lambd = 1 / scale
         mutation = np.random.exponential(scale=lambd)
         if np.random.rand() < 0.5:
             mutation *= -1
         child_value = round(parent_value + mutation, decimals)
-        child_value = max(minValue, min(child_value, maxValue))
+        child_value = max(minValue, min(child_value, actualMax))
         return child_value
