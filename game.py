@@ -30,8 +30,8 @@ surface_sidebar_lower_y = (SCREEN_HEIGHT*0.4)-(BUFFER*1.5)+(BUFFER*2)
 # pygame.time.set_timer(ADDPREY, int(40000/PLAY_SPEED_MOD))
 
 # custom event - add plant
-ADDPLANT = pygame.USEREVENT + 2
-pygame.time.set_timer(ADDPLANT, int(240000/PLAY_SPEED_MOD))
+# ADDPLANT = pygame.USEREVENT + 2
+# pygame.time.set_timer(ADDPLANT, int(240000/PLAY_SPEED_MOD))
 
 # sprite groups
 prey_group = pygame.sprite.Group()
@@ -46,8 +46,8 @@ all_group.add(player)
 
 # initial prey object
 for i in range(8):
-    new_prey = Prey(color=(1,1,1), size=random.randint(5,20))
-    # new_prey = Prey(color=(1,1,1))
+    # new_prey = Prey(color=(1,1,1), size=random.randint(5,20))
+    new_prey = Prey(color=(1,1,1))
     prey_group.add(new_prey)
     all_group.add(new_prey)
 
@@ -158,11 +158,10 @@ while running:
 
     # prep data
     prey_stats = analysis.create_prey_stats(prey_group.sprites())
-    size_dist = analysis.create_frequency_dist(prey_stats[:, 0], "size", SIZE_MIN, SIZE_MAX, SIZE_DECIMALS)
 
     ## draw sidebar
     # datavis
-    sidebar.create_bar_chart(screen, size_dist, surface_sidebar_upper_x, surface_sidebar_upper_y)
+    sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats)
     # list of sprites
     sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
     
