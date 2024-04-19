@@ -11,26 +11,37 @@ def create_prey_stats(prey_sprites):
     return prey_stats
 
 def create_frequency_dist(arr, gene, minValue, maxValue, decimals):
-
     if gene == "size":
         numValues = maxValue-minValue
+        iteration = 1
     if gene == "speed":
-        numValues = (maxValue-minValue)*10^decimals / 2
+        numValues = (maxValue-minValue)*10**decimals / 2
+        iteration = 0.1
     if gene == "sense":
-        numValues = (maxValue-minValue)*10^decimals / 10
-    
+        numValues = (maxValue-minValue) / 10
+        iteration = 1
     dist = {}
-    for value in range(minValue,maxValue):
-        dist[value] = 0
+    tempValue = minValue
+    # initialize frequency distribution with zeroes
+    while tempValue < maxValue:
+        # group values by rounding
+        groupedValue = round_genes(gene, tempValue)
+        # initialize frequency to zero
+        dist[str(groupedValue)] = 0
+        # iterate to next possible gene value
+        tempValue = round(tempValue + iteration, decimals) # FIX later in Animal.py, stop ints from being floats
+    # increment count by 1 for each prey by gene value
     for value in arr:
-        dist[value] +=  1
+        value = round(value, decimals)
+        groupedValue = round_genes(gene, value) # FIX later in Animal.py, stop ints from being floats
+        dist[str(groupedValue)] +=  1
     return dist
 
-    # dist = np.zeros((numValues, 2))
-    # for val in range(minValue,maxValue):
-    # for value in arr:
-    #     if value in dist:
-    #         dist[value] +=  1
-    #     else:
-    #         dist[value] = 1
-    # return dist
+def round_genes(gene, value):
+# group values accordingly
+    if gene == "sense":
+        # round to nearest 10
+        roundedValue = ((value + 5) // 10) * 10
+    else:
+        roundedValue = value
+    return roundedValue

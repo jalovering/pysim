@@ -41,7 +41,7 @@ class Animal(Creature):
         if decimals is None:
             actualMax = maxValue-1
         else:
-            actualMax = maxValue-(1/(10^decimals))
+            actualMax = maxValue-(1/(10**decimals))
         # exponential distribution
         lambd = 1 / scale
         mutation = np.random.exponential(scale=lambd)

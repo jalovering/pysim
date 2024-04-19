@@ -19,21 +19,27 @@ def write_sidebar_lower(screen, prey_list, start_index):
             break
 
 def draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats):
-    title_height = 20
-    histogram_height = 200
+    title_height = 30
+    histogram_height = 50
     x = surface_sidebar_upper_x
     y = surface_sidebar_upper_y
-    genes = ["size"] #, "speed", "sense"
+    index = 0 # prey_stats 2d array index
+    genes = ["size", "speed", "sense"]
     # create all 3 histograms
     for gene in genes:
-        size_dist = analysis.create_frequency_dist(prey_stats[:, 0], "size", SIZE_MIN, SIZE_MAX, SIZE_DECIMALS)
+        if gene is "size":
+            gene_min, gene_max, gene_decimals = SIZE_MIN, SIZE_MAX, SIZE_DECIMALS
+        elif gene is "speed":
+            gene_min, gene_max, gene_decimals = SPEED_MIN, SPEED_MAX, SPEED_DECIMALS
+        elif gene is "sense":
+            gene_min, gene_max, gene_decimals = SENSE_MIN, SENSE_MAX, SENSE_DECIMALS
+        size_dist = analysis.create_frequency_dist(prey_stats[:, index], gene, gene_min, gene_max, gene_decimals)
         draw_title(screen, gene, x, y)
-        x += title_height
         y += title_height
         draw_histogram(screen, size_dist, x, y)
-        x += histogram_height
         y += histogram_height
-
+        index += 1
+        
 # draw histogram title
 def draw_title(screen, gene, x, y):
     text = gene.upper()
@@ -41,18 +47,21 @@ def draw_title(screen, gene, x, y):
     screen.blit(text_surface, (x+10, y+10))
 
 # draw a stats distribution bar chart
-def draw_histogram(screen, dist, surface_sidebar_upper_x, surface_sidebar_upper_y):
+def draw_histogram(screen, dist, x, y):
     ## draw from frequency dictionary
     min_bar_height = 0
     max_bar_height = 20
-    start_x = surface_sidebar_upper_x
-    start_y = surface_sidebar_upper_y
+    start_x = x
+    start_y = y
     # index each bar
     index = 0
     n_bars = len(dist)
     # key is trait, value is frequency (count)
     for key, value in dist.items():
+        value = float(value)
+        # normalize gene value for bar height
         normalized_value = (value - min(dist.values())) / (max(dist.values()) - min(dist.values())) * (max_bar_height - min_bar_height) + min_bar_height
+        # force smallest values to 1px if they would have been rounded to zero
         if normalized_value == 0 and value > 0:
             normalized_value = 1
         draw_bar(screen, value, normalized_value, max_bar_height, index, n_bars, start_x, start_y)
@@ -60,16 +69,14 @@ def draw_histogram(screen, dist, surface_sidebar_upper_x, surface_sidebar_upper_
 
 # draw a single bar
 def draw_bar(screen, value, height, max_bar_height, index, n_bars, start_x, start_y):
+    # define size and positioning
     spacing = 5
-    width = SURFACE_SIDEBAR_WIDTH - (spacing*2)
+    width = SURFACE_SIDEBAR_WIDTH - (spacing*4)
     bar_width = width // n_bars
     bar_height = height
-    x = start_x + spacing + (bar_width * index)
+    x = start_x + 2*spacing + (bar_width * index)
     y = start_y + spacing + max_bar_height - bar_height
-    # print(start_y,height)
-    # print(bar_height+y)
     # create surface and rectangle
-    # color = pygame.Color("orange")
     color = COLOR_SIDEBAR_TEXT_DETAIL
     surf = pygame.Surface((bar_width,bar_height))
     surf.fill(color)
