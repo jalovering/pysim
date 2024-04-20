@@ -39,9 +39,14 @@ def create_frequency_dist(arr, gene, minValue, maxValue, decimals):
 
 def round_genes(gene, value):
 # group values accordingly
-    if gene == "sense":
+    if gene == "speed":
+        # round to nearest 0.2
+        roundedValue = (((value * 10) + 1.5) // 3) * 3
+    elif gene == "sense":
         # round to nearest 10
-        roundedValue = ((value + 5) // 10) * 10
+        # roundedValue = ((value + 5) // 10) * 10
+        # round to nearest 15
+        roundedValue = ((value + 7.5) // 15) * 15
     else:
         roundedValue = value
     return roundedValue

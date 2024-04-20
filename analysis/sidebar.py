@@ -18,6 +18,7 @@ def write_sidebar_lower(screen, prey_list, start_index):
         if y > SCREEN_HEIGHT-BUFFER:
             break
 
+# draw histograms
 def draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats):
     title_height = 30
     histogram_height = 50
@@ -27,11 +28,11 @@ def draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y,
     genes = ["size", "speed", "sense"]
     # create all 3 histograms
     for gene in genes:
-        if gene is "size":
+        if gene == "size":
             gene_min, gene_max, gene_decimals = SIZE_MIN, SIZE_MAX, SIZE_DECIMALS
-        elif gene is "speed":
+        elif gene == "speed":
             gene_min, gene_max, gene_decimals = SPEED_MIN, SPEED_MAX, SPEED_DECIMALS
-        elif gene is "sense":
+        elif gene == "sense":
             gene_min, gene_max, gene_decimals = SENSE_MIN, SENSE_MAX, SENSE_DECIMALS
         size_dist = analysis.create_frequency_dist(prey_stats[:, index], gene, gene_min, gene_max, gene_decimals)
         draw_title(screen, gene, x, y)
@@ -64,23 +65,27 @@ def draw_histogram(screen, dist, x, y):
         # force smallest values to 1px if they would have been rounded to zero
         if normalized_value == 0 and value > 0:
             normalized_value = 1
-        draw_bar(screen, value, normalized_value, max_bar_height, index, n_bars, start_x, start_y)
+        draw_bar(screen, normalized_value, max_bar_height, index, n_bars, start_x, start_y)
         index += 1
 
 # draw a single bar
-def draw_bar(screen, value, height, max_bar_height, index, n_bars, start_x, start_y):
+def draw_bar(screen, height, max_bar_height, index, n_bars, start_x, start_y):
     # define size and positioning
-    spacing = 5
-    width = SURFACE_SIDEBAR_WIDTH - (spacing*4)
-    bar_width = width // n_bars
+    buffer = 10
+    spacing = 2
+    width = SURFACE_SIDEBAR_WIDTH - (buffer*2)
+    bar_width = (width-(spacing*(n_bars-1))) // n_bars
     bar_height = height
-    x = start_x + 2*spacing + (bar_width * index)
-    y = start_y + spacing + max_bar_height - bar_height
+    if index == 0:
+        bar_x = start_x + buffer + bar_width*index
+    else:
+        bar_x = start_x + buffer + bar_width*index + spacing*index
+    bar_y = start_y + spacing + max_bar_height - bar_height
     # create surface and rectangle
     color = COLOR_SIDEBAR_TEXT_DETAIL
     surf = pygame.Surface((bar_width,bar_height))
     surf.fill(color)
-    rect = surf.get_rect(x=x, y=y)
+    rect = surf.get_rect(x=bar_x, y=bar_y)
     # draw on screen
     screen.blit(surf, rect)
 
