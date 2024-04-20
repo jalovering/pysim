@@ -61,11 +61,12 @@ def draw_histogram(screen, dist, x, y):
     for key, value in dist.items():
         value = float(value)
         # normalize gene value for bar height
-        normalized_value = (value - min(dist.values())) / (max(dist.values()) - min(dist.values())) * (max_bar_height - min_bar_height) + min_bar_height
+        normalized_value = round((value - min(dist.values())) / (max(dist.values()) - min(dist.values())) * (max_bar_height - min_bar_height) + min_bar_height)
         # force smallest values to 1px if they would have been rounded to zero
         if normalized_value == 0 and value > 0:
             normalized_value = 1
-        draw_bar(screen, normalized_value, max_bar_height, index, n_bars, start_x, start_y)
+        if value != 0:
+            draw_bar(screen, normalized_value, max_bar_height, index, n_bars, start_x, start_y)
         index += 1
 
 # draw a single bar
