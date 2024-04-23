@@ -22,6 +22,11 @@ class Prey(Animal):
             self.size = self.inherit_quantitative_trait("size", self.parent.size)
             self.speed = self.inherit_quantitative_trait("speed", self.parent.speed)
             self.sense = self.inherit_quantitative_trait("sense", self.parent.sense)
+        # gene based modifiers
+        speedModified = round(self.speed * (self.size / 10),1)
+        self.speed = min(max(speedModified, SPEED_MIN),SPEED_MAX)
+        senseModified = round(self.sense * (self.size / 10))
+        self.sense = min(max(senseModified, SENSE_MIN),SENSE_MAX)
         # setup hunger text   
         self.text_font_hunger = pygame.font.Font(None, 16)
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))

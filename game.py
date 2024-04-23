@@ -61,8 +61,8 @@ for i in range(8):
 #     all_group.add(new_prey)
 
 # initial plant object
-for i in range(10):
-    new_plant = Plant(size=random.randint(1,10))
+for i in range(12):
+    new_plant = Plant(size=random.randint(8,10))
     plant_group.add(new_plant)
     all_group.add(new_plant)
 
