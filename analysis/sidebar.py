@@ -59,9 +59,13 @@ def draw_histogram(screen, dist, x, y):
     n_bars = len(dist)
     # key is trait, value is frequency (count)
     for key, value in dist.items():
+        minVal = min(dist.values())
+        maxVal = max(dist.values())
+        if minVal + maxVal == 0:
+            break
         value = float(value)
         # normalize gene value for bar height
-        normalized_value = round((value - min(dist.values())) / (max(dist.values()) - min(dist.values())) * (max_bar_height - min_bar_height) + min_bar_height)
+        normalized_value = round((value - minVal) / (maxVal - minVal) * (max_bar_height - min_bar_height) + min_bar_height)
         # force smallest values to 1px if they would have been rounded to zero
         if normalized_value == 0 and value > 0:
             normalized_value = 1
