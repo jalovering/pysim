@@ -133,9 +133,6 @@ while running:
             )
             bar_group.add(new_bar)
             all_group.add(new_bar)
-            
-    # bar_group.add(new_prey)
-    # all_group.add(new_prey)
 
     # user input
     pressed_keys = pygame.key.get_pressed()
@@ -180,14 +177,23 @@ while running:
     prey_stats = analyze.create_prey_stats(prey_group.sprites())
 
     ## draw sidebar
+    # draw last frame bars
+    for entity in bar_group:
+        # check for mouse hover
+        if entity.rect.collidepoint(pygame.mouse.get_pos()):
+            entity.hoverOn()
+        # draw bar
+        screen.blit(entity.surf, entity.rect)
+    # delete last frame bars
+    for entity in bar_group:
+        entity.kill()
+        del entity
+    # create new sidebar
     # datavis
     sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats)
     # list of sprites
     sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
-    # draw bars
-    for entity in bar_group:
-        screen.blit(entity.surf, entity.rect)
-
+    
     ### TESTING START
     # print(pygame.time.get_ticks())
     # print(plant_group)
