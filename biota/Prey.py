@@ -39,7 +39,7 @@ class Prey(Animal):
         self.next_hunger = self.hunger_interval
         self.mate_interval = PREY_MATE_INTERVAL / PLAY_SPEED_MOD
         self.next_mate = self.mate_interval
-        self.canEatPlant = self.size >= 15
+        self.canEatPlant = self.size >= 12
     def touch_plant(self, plant_group):
         food_touched = pygame.sprite.spritecollide(self, plant_group, False)
         self.touchFood = False

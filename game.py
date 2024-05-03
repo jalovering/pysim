@@ -8,7 +8,8 @@ from biota.Berry import Berry
 from var import *
 import random
 import analysis.sidebar as sidebar
-import analysis.analysis as analysis
+import analysis.analyze as analyze
+from analysis.Bar import Bar
 
 # initialize pygame
 pygame.init()
@@ -38,6 +39,7 @@ prey_group = pygame.sprite.Group()
 sensor_group = pygame.sprite.Group()
 plant_group = pygame.sprite.Group()
 berry_group = pygame.sprite.Group()
+bar_group = pygame.sprite.Group()
 all_group = pygame.sprite.Group()
 
 # player object
@@ -48,7 +50,7 @@ all_group.add(player)
 for i in range(8):
     new_prey = Prey(
         color=(1,1,1), 
-        size=random.randint(9,11),
+        size=random.randint(12,12),
         speed=round(random.uniform(0.8, 1.2),1),
         sense=random.randint(80,120))
     # new_prey = Prey(color=(1,1,1))
@@ -120,6 +122,20 @@ while running:
             event.plant.berries.append(new_berry)
             berry_group.add(new_berry)
             all_group.add(new_berry)
+        # add bar
+        elif event.type == ADDBAR:
+            new_bar = Bar(
+                color=COLOR_SIDEBAR_TEXT_DETAIL,
+                x = event.x,
+                y = event.y,
+                height = event.height,
+                width = event.width
+            )
+            bar_group.add(new_bar)
+            all_group.add(new_bar)
+            
+    # bar_group.add(new_prey)
+    # all_group.add(new_prey)
 
     # user input
     pressed_keys = pygame.key.get_pressed()
@@ -161,14 +177,17 @@ while running:
     screen.blit(player.surf, player.rect)
 
     # prep data
-    prey_stats = analysis.create_prey_stats(prey_group.sprites())
+    prey_stats = analyze.create_prey_stats(prey_group.sprites())
 
     ## draw sidebar
     # datavis
     sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats)
     # list of sprites
     sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
-    
+    # draw bars
+    for entity in bar_group:
+        screen.blit(entity.surf, entity.rect)
+
     ### TESTING START
     # print(pygame.time.get_ticks())
     # print(plant_group)

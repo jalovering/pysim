@@ -1,5 +1,5 @@
 import pygame
-import analysis.analysis as analysis
+import analysis.analyze as analyze
 from var import *
 
 # draw text on lower sidebar
@@ -34,7 +34,7 @@ def draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y,
             gene_min, gene_max, gene_decimals = SPEED_MIN, SPEED_MAX, SPEED_DECIMALS
         elif gene == "sense":
             gene_min, gene_max, gene_decimals = SENSE_MIN, SENSE_MAX, SENSE_DECIMALS
-        size_dist = analysis.create_frequency_dist(prey_stats[:, index], gene, gene_min, gene_max, gene_decimals)
+        size_dist = analyze.create_frequency_dist(prey_stats[:, index], gene, gene_min, gene_max, gene_decimals)
         draw_title(screen, gene, x, y)
         y += title_height
         draw_histogram(screen, size_dist, x, y)
@@ -87,12 +87,22 @@ def draw_bar(screen, height, max_bar_height, index, n_bars, start_x, start_y):
         bar_x = start_x + buffer + bar_width*index + spacing*index
     bar_y = start_y + spacing + max_bar_height - bar_height
     # create surface and rectangle
-    color = COLOR_SIDEBAR_TEXT_DETAIL
-    surf = pygame.Surface((bar_width,bar_height))
-    surf.fill(color)
-    rect = surf.get_rect(x=bar_x, y=bar_y)
-    # draw on screen
-    screen.blit(surf, rect)
+        # color = COLOR_SIDEBAR_TEXT_DETAIL
+        # surf = pygame.Surface((bar_width,bar_height))
+        # surf.fill(color)
+        # rect = surf.get_rect(x=bar_x, y=bar_y)
+        # draw on screen
+        # screen.blit(surf, rect)
+    # create bar
+    add_bar_event = pygame.event.Event(
+        ADDBAR,
+        color=COLOR_SIDEBAR_TEXT_DETAIL,
+        x = bar_x,
+        y = bar_y,
+        height = bar_height,
+        width = bar_width
+    )
+    pygame.event.post(add_bar_event)    
 
 # handle scrolling on lower sidebar
 def scroll(delta, prey_list, start_index):
