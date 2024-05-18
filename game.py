@@ -64,7 +64,9 @@ for i in range(8):
 
 # initial plant object
 for i in range(12):
-    new_plant = Plant(size=random.randint(8,10))
+    new_plant = Plant(
+        size=random.randint(8,10)
+        )
     plant_group.add(new_plant)
     all_group.add(new_plant)
 
@@ -77,7 +79,24 @@ clock = pygame.time.Clock()
 running = True
 while running: 
 
-    # event handler
+    ## reset for this frame
+    # reset screen and surface
+    screen.fill(COLOR_BG) 
+    surface.fill(COLOR_SURFACE)
+    surface_sidebar_lower.fill(COLOR_SURFACE_SIDEBAR)
+    surface_sidebar_upper.fill(COLOR_SURFACE_SIDEBAR)
+    screen.blit(surface,(BUFFER,BUFFER))
+    screen.blit(surface_sidebar_upper,(surface_sidebar_upper_x, surface_sidebar_upper_y))
+    screen.blit(surface_sidebar_lower,(surface_sidebar_lower_x, surface_sidebar_lower_y))
+    # delete last frame bars
+    for entity in bar_group:
+        if isHoverFrame and entity.rect.collidepoint(pygame.mouse.get_pos()):
+            for prey in prey_group:
+                prey.highlightOff()
+        entity.kill()
+        del entity
+    
+    ## event handler
     for event in pygame.event.get(): 
         # QUIT - window close      
         if event.type == pygame.QUIT: 
@@ -123,7 +142,7 @@ while running:
             berry_group.add(new_berry)
             all_group.add(new_berry)
         # add bar
-        elif event.type == ADDBAR:
+        if event.type == ADDBAR:
             new_bar = Bar(
                 color=COLOR_SIDEBAR_TEXT_DETAIL,
                 x = event.x,
@@ -134,33 +153,38 @@ while running:
             bar_group.add(new_bar)
             all_group.add(new_bar)
 
+    ## run updates
     # user input
     pressed_keys = pygame.key.get_pressed()
-
     # update plant locations
     plant_group.update()
-
     # update berry locations
     berry_group.update()
-
     # update prey locations
     sensor_group.update(player,plant_group,prey_group)
-
     # update prey locations
     prey_group.update(plant_group,prey_group)
-
     # update player location
     player.update(pressed_keys)
 
-    # reset screen and surface
-    screen.fill(COLOR_BG) 
-    surface.fill(COLOR_SURFACE)
-    surface_sidebar_lower.fill(COLOR_SURFACE_SIDEBAR)
-    surface_sidebar_upper.fill(COLOR_SURFACE_SIDEBAR)
-    screen.blit(surface,(BUFFER,BUFFER))
-    screen.blit(surface_sidebar_upper,(surface_sidebar_upper_x, surface_sidebar_upper_y))
-    screen.blit(surface_sidebar_lower,(surface_sidebar_lower_x, surface_sidebar_lower_y))
-
+    ## prepare sidebar (technically representing the last frame)
+    # prep data
+    prey_stats = analyze.create_prey_stats(prey_group.sprites())
+    # upper sidebar: datavis
+    sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats)
+    # lower sidebar: list
+    sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
+    
+    ## draw current frame
+    # draw histograms
+    isHoverFrame = False
+    for entity in bar_group:
+        # check for mouse hover
+        if entity.rect.collidepoint(pygame.mouse.get_pos()):
+            entity.hoverOn(prey_group)
+            isHoverFrame = True
+        # draw bar
+        screen.blit(entity.surf, entity.rect)
     # draw sprites
     for entity in sensor_group:
         screen.blit(entity.surf, entity.rect)
@@ -173,34 +197,12 @@ while running:
         screen.blit(entity.surf, entity.rect)
     screen.blit(player.surf, player.rect)
 
-    # prep data
-    prey_stats = analyze.create_prey_stats(prey_group.sprites())
-
-    ## draw sidebar
-    # draw last frame bars
-    for entity in bar_group:
-        # check for mouse hover
-        if entity.rect.collidepoint(pygame.mouse.get_pos()):
-            entity.hoverOn()
-        # draw bar
-        screen.blit(entity.surf, entity.rect)
-    # delete last frame bars
-    for entity in bar_group:
-        entity.kill()
-        del entity
-    # create new sidebar
-    # datavis
-    sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats)
-    # list of sprites
-    sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
-    
     ### TESTING START
     # print(pygame.time.get_ticks())
     # print(plant_group)
     # print(prey_stats[:, 0])
-
     ### TESTING END
 
-    # update display
+    ## update display
     pygame.display.flip()
     clock.tick(FPS*FPS_MOD)

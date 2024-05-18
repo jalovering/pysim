@@ -8,6 +8,7 @@ class Prey(Animal):
         super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor, parent)
         self.surf = pygame.Surface((self.size*1.5, self.size))
         self.surf.fill(self.color)
+        self.initialColor = color
         # if there is no parent
         if self.parent == None:
             self.rect = self.surf.get_rect(
@@ -254,3 +255,13 @@ class Prey(Animal):
         # save movement for next frame
         self.prev_move_x = move_x
         self.prev_move_y = move_y
+    def highlightOn(self):
+        # change properties
+        self.color = (225,225,225)
+        # apply properties
+        self.surf.fill(self.color)
+    def highlightOff(self):
+        # change properties
+        self.color = self.initialColor
+        # apply properties
+        self.surf.fill(self.color)

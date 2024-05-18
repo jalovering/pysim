@@ -16,7 +16,7 @@ class Bar(pygame.sprite.Sprite):
         self.surf = pygame.Surface((self.width, self.height))
         self.surf.fill(self.color)
         self.rect = self.surf.get_rect(x=self.x, y=self.y)
-    def hoverOn(self):
+    def hoverOn(self,prey_group):
         # change properties
         self.color = (225,225,225)
         self.x -= 1
@@ -27,3 +27,7 @@ class Bar(pygame.sprite.Sprite):
         self.surf = pygame.Surface((self.width, self.height))
         self.surf.fill(self.color)
         self.rect = self.surf.get_rect(x=self.x, y=self.y)
+        # highlight relevant Animals
+        for prey in prey_group:
+            prey.highlightOn()
+        
