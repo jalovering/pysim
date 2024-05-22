@@ -40,7 +40,7 @@ def create_frequency_dist(arr, gene, minValue, maxValue, decimals):
 def round_genes(gene, value):
 # group values accordingly
     if gene == "speed":
-        # round to nearest 0.2
+        # round to nearest 0.3
         roundedValue = (((value * 10) + 1.5) // 3) * 3
     elif gene == "sense":
         # round to nearest 10

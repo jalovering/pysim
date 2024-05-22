@@ -50,10 +50,10 @@ SENSE_MAX = 300
 SENSE_DECIMALS = None
 ## time-based attributes
 PREY_EAT_TIME = 1000 # takes 1000ms to eat
-PREY_HUNGER_INTERVAL = 10000 # gain 1 hunger every 10s
+PREY_HUNGER_INTERVAL = 12000 # gain 1 hunger every 12s
 PREY_DYING_TIME = 3000 # takes 3000ms to die
 PREY_MATE_INTERVAL = 60000 # mating eligibility every 60s
-PLANT_GROWTH_INTERVAL = 15000 # grow every 15s
+PLANT_GROWTH_INTERVAL = 10000 # grow every 10s
 ## sidebar
 SIDEBAR_FONT_SIZE = 16
 SIDEBAR_LINE_HEIGHT = SIDEBAR_FONT_SIZE + 5

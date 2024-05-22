@@ -34,10 +34,10 @@ def draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y,
             gene_min, gene_max, gene_decimals = SPEED_MIN, SPEED_MAX, SPEED_DECIMALS
         elif gene == "sense":
             gene_min, gene_max, gene_decimals = SENSE_MIN, SENSE_MAX, SENSE_DECIMALS
-        size_dist = analyze.create_frequency_dist(prey_stats[:, index], gene, gene_min, gene_max, gene_decimals)
+        dist = analyze.create_frequency_dist(prey_stats[:, index], gene, gene_min, gene_max, gene_decimals)
         draw_title(screen, gene, x, y)
         y += title_height
-        draw_histogram(screen, size_dist, x, y)
+        draw_histogram(screen, gene, dist, x, y)
         y += histogram_height
         index += 1
         
@@ -48,7 +48,7 @@ def draw_title(screen, gene, x, y):
     screen.blit(text_surface, (x+10, y+10))
 
 # draw a stats distribution bar chart
-def draw_histogram(screen, dist, x, y):
+def draw_histogram(screen, gene, dist, x, y):
     ## draw from frequency dictionary
     min_bar_height = 0
     max_bar_height = 20
@@ -58,7 +58,7 @@ def draw_histogram(screen, dist, x, y):
     index = 0
     n_bars = len(dist)
     # key is trait, value is frequency (count)
-    for key, value in dist.items():
+    for groupedValue, value in dist.items():
         minVal = min(dist.values())
         maxVal = max(dist.values())
         if minVal + maxVal == 0:
@@ -70,11 +70,11 @@ def draw_histogram(screen, dist, x, y):
         if normalized_value == 0 and value > 0:
             normalized_value = 1
         if value != 0:
-            draw_bar(screen, normalized_value, max_bar_height, index, n_bars, start_x, start_y)
+            draw_bar(screen, normalized_value, max_bar_height, index, n_bars, start_x, start_y, groupedValue, gene)
         index += 1
 
 # draw a single bar
-def draw_bar(screen, height, max_bar_height, index, n_bars, start_x, start_y):
+def draw_bar(screen, height, max_bar_height, index, n_bars, start_x, start_y, groupedValue, gene):
     # define size and positioning
     buffer = 10
     spacing = 2
@@ -100,7 +100,9 @@ def draw_bar(screen, height, max_bar_height, index, n_bars, start_x, start_y):
         x = bar_x,
         y = bar_y,
         height = bar_height,
-        width = bar_width
+        width = bar_width,
+        groupedValue = groupedValue,
+        gene = gene
     )
     pygame.event.post(add_bar_event)    
 

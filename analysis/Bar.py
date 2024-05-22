@@ -1,8 +1,9 @@
 import pygame
 from var import *
+from analysis.analyze import round_genes
 
 class Bar(pygame.sprite.Sprite):
-    def __init__(self, color, x, y, height, width):
+    def __init__(self, color, x, y, height, width, groupedValue, gene):
         # properties
         self.color = color
         self.initialColor = color
@@ -10,6 +11,8 @@ class Bar(pygame.sprite.Sprite):
         self.y = y
         self.height = height
         self.width = width
+        self.groupedValue = groupedValue
+        self.gene = gene
         # create sprite
         super(Bar, self).__init__()
         # create bar
@@ -29,5 +32,6 @@ class Bar(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect(x=self.x, y=self.y)
         # highlight relevant Animals
         for prey in prey_group:
-            prey.highlightOn()
+            if str(round_genes(self.gene,getattr(prey, self.gene))) == self.groupedValue:
+                prey.highlightOn()
         

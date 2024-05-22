@@ -148,7 +148,9 @@ while running:
                 x = event.x,
                 y = event.y,
                 height = event.height,
-                width = event.width
+                width = event.width,
+                groupedValue = event.groupedValue,
+                gene = event.gene
             )
             bar_group.add(new_bar)
             all_group.add(new_bar)
@@ -201,6 +203,7 @@ while running:
     # print(pygame.time.get_ticks())
     # print(plant_group)
     # print(prey_stats[:, 0])
+    # print(prey_stats)
     ### TESTING END
 
     ## update display
