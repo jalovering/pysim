@@ -31,8 +31,8 @@ surface_sidebar_lower_y = (SCREEN_HEIGHT*0.4)-(BUFFER*1.5)+(BUFFER*2)
 # pygame.time.set_timer(ADDPREY, int(40000/PLAY_SPEED_MOD))
 
 # custom event - add plant
-# ADDPLANT = pygame.USEREVENT + 2
-# pygame.time.set_timer(ADDPLANT, int(240000/PLAY_SPEED_MOD))
+ADDPLANT = pygame.USEREVENT + 2
+pygame.time.set_timer(ADDPLANT, int(60000/PLAY_SPEED_MOD))
 
 # sprite groups
 prey_group = pygame.sprite.Group()
@@ -47,10 +47,10 @@ player = Player()
 all_group.add(player)
 
 # initial prey object
-for i in range(8):
+for i in range(6):
     new_prey = Prey(
         color=(1,1,1), 
-        size=random.randint(12,12),
+        size=random.randint(10,12),
         speed=round(random.uniform(0.8, 1.2),1),
         sense=random.randint(80,120))
     # new_prey = Prey(color=(1,1,1))
@@ -63,7 +63,7 @@ for i in range(8):
 #     all_group.add(new_prey)
 
 # initial plant object
-for i in range(12):
+for i in range(8):
     new_plant = Plant(
         size=random.randint(8,10)
         )

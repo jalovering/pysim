@@ -24,10 +24,11 @@ class Prey(Animal):
             self.speed = self.inherit_quantitative_trait("speed", self.parent.speed)
             self.sense = self.inherit_quantitative_trait("sense", self.parent.sense)
         # gene based modifiers
-        speedModified = round(self.speed * (self.size / 10),1)
+        speedModified = round(self.speed * (self.size / PREY_DEFAULT_SIZE),1)
         self.speed = min(max(speedModified, SPEED_MIN),SPEED_MAX)
-        senseModified = round(self.sense * (self.size / 10))
+        senseModified = round(self.sense * (self.size / PREY_DEFAULT_SIZE))
         self.sense = min(max(senseModified, SENSE_MIN),SENSE_MAX)
+        self.hunger_interval = PREY_HUNGER_INTERVAL / ((self.size/PREY_DEFAULT_SIZE)*((self.speed)/PREY_DEFAULT_SPEED)*PLAY_SPEED_MOD)
         # setup hunger text   
         self.text_font_hunger = pygame.font.Font(None, 16)
         self.text_surf = self.text_font_hunger.render(str(self.hunger), True, (0,0,0))
@@ -36,7 +37,6 @@ class Prey(Animal):
         # set up initial settings
         self.prev_move_x = 0
         self.prev_move_y = 0
-        self.hunger_interval = PREY_HUNGER_INTERVAL / ((self.size/PREY_DEFAULT_SIZE)*((self.speed)/PREY_DEFAULT_SPEED)*PLAY_SPEED_MOD)
         self.next_hunger = self.hunger_interval
         self.mate_interval = PREY_MATE_INTERVAL / PLAY_SPEED_MOD
         self.next_mate = self.mate_interval
@@ -231,12 +231,9 @@ class Prey(Animal):
                     self.start_eat()
                     return
             elif self.senseFood:
-                if len(self.senseFoodSource.berries) > 0:
-                    move_x, move_y = self.move_toward(self.senseFoodSource.rect.center)
-                else:
-                    self.senseFood = False
-                    move_x, move_y = self.move_random()
+                move_x, move_y = self.move_toward(self.senseFoodSource.rect.center)
             else:
+                self.senseFood = False
                 move_x, move_y = self.move_random()
         # if no collisions, move randomly
         else:

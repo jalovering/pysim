@@ -49,11 +49,11 @@ SENSE_MIN = 50
 SENSE_MAX = 300
 SENSE_DECIMALS = None
 ## time-based attributes
-PREY_EAT_TIME = 1000 # takes 1000ms to eat
-PREY_HUNGER_INTERVAL = 12000 # gain 1 hunger every 12s
-PREY_DYING_TIME = 3000 # takes 3000ms to die
-PREY_MATE_INTERVAL = 60000 # mating eligibility every 60s
-PLANT_GROWTH_INTERVAL = 10000 # grow every 10s
+PREY_EAT_TIME = 1000 # takes 1s to eat
+PREY_HUNGER_INTERVAL = 16000 # gain 1 hunger every 16s
+PREY_DYING_TIME = 3000 # takes 3s to die
+PREY_MATE_INTERVAL = 48000 # mating eligibility every 48s
+PLANT_GROWTH_INTERVAL = 8000 # grow every 8s
 ## sidebar
 SIDEBAR_FONT_SIZE = 16
 SIDEBAR_LINE_HEIGHT = SIDEBAR_FONT_SIZE + 5
@@ -67,5 +67,5 @@ ADDPREYBABY = pygame.USEREVENT + 5
 ADDBAR = pygame.USEREVENT + 6
 ## PLAY SPEED
 FPS = 60
-PLAY_SPEED_MOD = 12
+PLAY_SPEED_MOD = 8
 FPS_MOD = 1
