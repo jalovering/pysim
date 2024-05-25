@@ -6,23 +6,23 @@ from var import *
 class Prey(Animal):
     def __init__(self, color=COLOR_PREY, size=PREY_DEFAULT_SIZE, speed=PREY_DEFAULT_SPEED, status="moving", statusLastUpdated=0, hunger=10, age=0, sense=100, sensor=None, parent=None):
         super(Prey, self).__init__(color, size, speed, status, statusLastUpdated, hunger, age, sense, sensor, parent)
-        self.surf = pygame.Surface((self.size*1.5, self.size))
-        self.surf.fill(self.color)
-        self.initialColor = color
         # if there is no parent
         if self.parent == None:
-            self.rect = self.surf.get_rect(
-                center=(
+            rect_center=(
                     random.randint(BUFFER, SURFACE_MAIN_WIDTH+BUFFER),
                     random.randint(BUFFER, SCREEN_HEIGHT-BUFFER),
                 )
-            )
         # if there is a parent
         else:
-            self.rect = self.surf.get_rect(center=self.parent.rect.center)
             self.size = self.inherit_quantitative_trait("size", self.parent.size)
             self.speed = self.inherit_quantitative_trait("speed", self.parent.speed)
             self.sense = self.inherit_quantitative_trait("sense", self.parent.sense)
+            rect_center = self.parent.rect.center
+        # create surface and rect
+        self.surf = pygame.Surface((self.size*1.5, self.size))
+        self.surf.fill(self.color)
+        self.initialColor = color 
+        self.rect = self.surf.get_rect(center=rect_center)
         # gene based modifiers
         speedModified = round(self.speed * (self.size / PREY_DEFAULT_SIZE),1)
         self.speed = min(max(speedModified, SPEED_MIN),SPEED_MAX)

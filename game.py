@@ -50,7 +50,7 @@ all_group.add(player)
 for i in range(6):
     new_prey = Prey(
         color=(1,1,1), 
-        size=random.randint(10,12),
+        size=random.randint(8,12),
         speed=round(random.uniform(0.8, 1.2),1),
         sense=random.randint(80,120))
     # new_prey = Prey(color=(1,1,1))
