@@ -19,7 +19,7 @@ def write_sidebar_lower(screen, prey_list, start_index):
             break
 
 # draw histograms
-def draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats):
+def draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats, isInitial):
     title_height = 30
     histogram_height = 50
     x = surface_sidebar_upper_x
@@ -35,9 +35,10 @@ def draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y,
         elif gene == "sense":
             gene_min, gene_max, gene_decimals = SENSE_MIN, SENSE_MAX, SENSE_DECIMALS
         dist = analyze.create_frequency_dist(prey_stats[:, index], gene, gene_min, gene_max, gene_decimals)
-        draw_title(screen, gene, x, y)
+        if not isInitial:
+            draw_title(screen, gene, x, y)
         y += title_height
-        draw_histogram(screen, gene, dist, x, y)
+        draw_histogram(screen, gene, dist, x, y, isInitial)
         y += histogram_height
         index += 1
         
@@ -48,7 +49,7 @@ def draw_title(screen, gene, x, y):
     screen.blit(text_surface, (x+10, y+10))
 
 # draw a stats distribution bar chart
-def draw_histogram(screen, gene, dist, x, y):
+def draw_histogram(screen, gene, dist, x, y, isInitial):
     ## draw from frequency dictionary
     min_bar_height = 0
     max_bar_height = 20
@@ -70,12 +71,16 @@ def draw_histogram(screen, gene, dist, x, y):
         if normalized_value == 0 and value > 0:
             normalized_value = 1
         if value != 0:
-            draw_bar(screen, normalized_value, max_bar_height, index, n_bars, start_x, start_y, groupedValue, gene)
+            draw_bar(screen, normalized_value, max_bar_height, index, n_bars, start_x, start_y, groupedValue, gene, isInitial)
         index += 1
 
 # draw a single bar
-def draw_bar(screen, height, max_bar_height, index, n_bars, start_x, start_y, groupedValue, gene):
+def draw_bar(screen, height, max_bar_height, index, n_bars, start_x, start_y, groupedValue, gene, isInitial):
     # define size and positioning
+    if isInitial:
+        color = COLOR_SIDEBAR_BAR_INITIAL
+    else:
+        color = COLOR_SIDEBAR_TEXT_DETAIL
     buffer = 10
     spacing = 2
     width = SURFACE_SIDEBAR_WIDTH - (buffer*2)
@@ -86,23 +91,17 @@ def draw_bar(screen, height, max_bar_height, index, n_bars, start_x, start_y, gr
     else:
         bar_x = start_x + buffer + bar_width*index + spacing*index
     bar_y = start_y + spacing + max_bar_height - bar_height
-    # create surface and rectangle
-        # color = COLOR_SIDEBAR_TEXT_DETAIL
-        # surf = pygame.Surface((bar_width,bar_height))
-        # surf.fill(color)
-        # rect = surf.get_rect(x=bar_x, y=bar_y)
-        # draw on screen
-        # screen.blit(surf, rect)
     # create bar
     add_bar_event = pygame.event.Event(
         ADDBAR,
-        color=COLOR_SIDEBAR_TEXT_DETAIL,
+        color=color,
         x = bar_x,
         y = bar_y,
         height = bar_height,
         width = bar_width,
         groupedValue = groupedValue,
-        gene = gene
+        gene = gene,
+        isInitial = isInitial
     )
     pygame.event.post(add_bar_event)    
 

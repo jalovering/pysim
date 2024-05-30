@@ -13,6 +13,7 @@ from analysis.Bar import Bar
 
 # initialize pygame
 pygame.init()
+isInitialFrame = True
 
 # screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) 
@@ -32,7 +33,7 @@ surface_sidebar_lower_y = (SCREEN_HEIGHT*0.4)-(BUFFER*1.5)+(BUFFER*2)
 
 # custom event - add plant
 ADDPLANT = pygame.USEREVENT + 2
-pygame.time.set_timer(ADDPLANT, int(60000/PLAY_SPEED_MOD))
+pygame.time.set_timer(ADDPLANT, int(100000/PLAY_SPEED_MOD))
 
 # sprite groups
 prey_group = pygame.sprite.Group()
@@ -40,6 +41,7 @@ sensor_group = pygame.sprite.Group()
 plant_group = pygame.sprite.Group()
 berry_group = pygame.sprite.Group()
 bar_group = pygame.sprite.Group()
+bar_initial_group = pygame.sprite.Group()
 all_group = pygame.sprite.Group()
 
 # player object
@@ -144,7 +146,7 @@ while running:
         # add bar
         if event.type == ADDBAR:
             new_bar = Bar(
-                color=COLOR_SIDEBAR_TEXT_DETAIL,
+                color=event.color,
                 x = event.x,
                 y = event.y,
                 height = event.height,
@@ -152,7 +154,10 @@ while running:
                 groupedValue = event.groupedValue,
                 gene = event.gene
             )
-            bar_group.add(new_bar)
+            if event.isInitial:
+                bar_initial_group.add(new_bar)
+            else:
+                bar_group.add(new_bar)
             all_group.add(new_bar)
 
     ## run updates
@@ -172,20 +177,27 @@ while running:
     ## prepare sidebar (technically representing the last frame)
     # prep data
     prey_stats = analyze.create_prey_stats(prey_group.sprites())
-    # upper sidebar: datavis
-    sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats)
+    if isInitialFrame:
+        prey_stats_initial = prey_stats
+    else:
+        # upper sidebar: datavis - initial
+        sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats_initial, isInitial=True)
+    # upper sidebar: datavis - current
+    sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats, isInitial=False)
     # lower sidebar: list
     sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
     
     ## draw current frame
     # draw histograms
     isHoverFrame = False
+    # draw bars
+    for entity in bar_initial_group:
+        screen.blit(entity.surf, entity.rect)
     for entity in bar_group:
         # check for mouse hover
         if entity.rect.collidepoint(pygame.mouse.get_pos()):
             entity.hoverOn(prey_group)
             isHoverFrame = True
-        # draw bar
         screen.blit(entity.surf, entity.rect)
     # draw sprites
     for entity in sensor_group:
@@ -209,3 +221,4 @@ while running:
     ## update display
     pygame.display.flip()
     clock.tick(FPS*FPS_MOD)
+    isInitialFrame = False
