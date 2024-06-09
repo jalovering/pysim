@@ -33,7 +33,7 @@ surface_sidebar_lower_y = (SCREEN_HEIGHT*0.4)-(BUFFER*1.5)+(BUFFER*2)
 
 # custom event - add plant
 ADDPLANT = pygame.USEREVENT + 2
-pygame.time.set_timer(ADDPLANT, int(100000/PLAY_SPEED_MOD))
+pygame.time.set_timer(ADDPLANT, int(30000/PLAY_SPEED_MOD))
 
 # sprite groups
 prey_group = pygame.sprite.Group()
@@ -179,11 +179,11 @@ while running:
     prey_stats = analyze.create_prey_stats(prey_group.sprites())
     if isInitialFrame:
         prey_stats_initial = prey_stats
-    else:
         # upper sidebar: datavis - initial
         sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats_initial, isInitial=True)
-    # upper sidebar: datavis - current
-    sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats, isInitial=False)
+    else:
+        # upper sidebar: datavis - current
+        sidebar.draw_sidebar_upper(screen, surface_sidebar_upper_x, surface_sidebar_upper_y, prey_stats, isInitial=False)
     # lower sidebar: list
     sidebar.write_sidebar_lower(screen, prey_group.sprites(), start_index)
     
@@ -216,6 +216,13 @@ while running:
     # print(plant_group)
     # print(prey_stats[:, 0])
     # print(prey_stats)
+    print(len(prey_group))
+    print(len(sensor_group))
+    print(len(plant_group))
+    print(len(berry_group))
+    print(len(bar_group))
+    print(len(bar_initial_group))
+    print(len(all_group))
     ### TESTING END
 
     ## update display

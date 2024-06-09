@@ -20,7 +20,7 @@ COLOR_PREY = (106,116,158)
 COLOR_PLANT = (112, 156, 124)
 COLOR_BERRY = (194, 114, 118)
 COLOR_PLAYER = (158, 116, 106)
-COLOR_SENSOR = (175, 175, 175, 100)
+COLOR_SENSOR = (175, 175, 175, 50)
 # COLOR_BG = c5
 # COLOR_SURFACE = c3
 # COLOR_PREY = (106,116,158)
@@ -53,8 +53,12 @@ SENSE_DECIMALS = None
 PREY_EAT_TIME = 1000 # takes 1s to eat
 PREY_HUNGER_INTERVAL = 16000 # gain 1 hunger every 16s
 PREY_DYING_TIME = 3000 # takes 3s to die
+# regular-growth
 PREY_MATE_INTERVAL = 48000 # mating eligibility every 48s
 PLANT_GROWTH_INTERVAL = 16000 # grow every 16s
+# rapid-growth
+# PREY_MATE_INTERVAL = 16000 # mating eligibility every 16s
+# PLANT_GROWTH_INTERVAL = 4000 # grow every 4s
 ## sidebar
 SIDEBAR_FONT_SIZE = 16
 SIDEBAR_LINE_HEIGHT = SIDEBAR_FONT_SIZE + 5
