@@ -222,7 +222,7 @@ class Prey(Animal):
             self.touch_plant(plant_group) # checks to see if touching edible plant or plant w/ food
             if self.touchFood:
                 if self.status == "eating":
-                    if (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
+                    if (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks():
                         return
                     elif (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) < pygame.time.get_ticks():
                         self.finish_eat()
@@ -230,9 +230,11 @@ class Prey(Animal):
                 else:
                     self.start_eat()
                     return
-            elif self.senseFood:
+            # if it hasn't been long, keeping heading towards the food
+            elif self.senseFood and (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks():
                 move_x, move_y = self.move_toward(self.senseFoodSource.rect.center)
-            else:
+            # otherwise sombody else probably ate it so give up
+            else:                
                 self.status == "foraging"
                 self.senseFood = False
                 move_x, move_y = self.move_random()
