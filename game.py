@@ -213,16 +213,15 @@ while running:
 
     ### TESTING START
     # print(pygame.time.get_ticks())
-    # print(plant_group)
     # print(prey_stats[:, 0])
     # print(prey_stats)
-    print(len(prey_group))
-    print(len(sensor_group))
-    print(len(plant_group))
-    print(len(berry_group))
-    print(len(bar_group))
-    print(len(bar_initial_group))
-    print(len(all_group))
+    # print(len(prey_group))
+    # print(len(sensor_group))
+    # print(len(plant_group))
+    # print(len(berry_group))
+    # print(len(bar_group))
+    # print(len(bar_initial_group))
+    # print(len(all_group))
     ### TESTING END
 
     ## update display

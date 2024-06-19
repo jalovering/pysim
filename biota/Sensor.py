@@ -53,6 +53,6 @@ class Sensor(pygame.sprite.Sprite):
         self.sense_player(player)
         if self.animal.status == "courting":
             self.sense_prey(prey_group)
-        if self.animal.status == "foraging" and self.animal.senseFood == False:
+        if self.animal.status == "foraging":
             self.sense_food(plant_group)
         self.rect.center = self.animal.rect.center

@@ -219,7 +219,7 @@ class Prey(Animal):
                 move_x, move_y = self.move_random()
         # food collision
         elif self.status == "foraging" or self.status == "eating":
-            self.touch_plant(plant_group)
+            self.touch_plant(plant_group) # checks to see if touching edible plant or plant w/ food
             if self.touchFood:
                 if self.status == "eating":
                     if (self.statusLastUpdated + (PREY_EAT_TIME/PLAY_SPEED_MOD)) >= pygame.time.get_ticks() :
@@ -233,6 +233,7 @@ class Prey(Animal):
             elif self.senseFood:
                 move_x, move_y = self.move_toward(self.senseFoodSource.rect.center)
             else:
+                self.status == "foraging"
                 self.senseFood = False
                 move_x, move_y = self.move_random()
         # if no collisions, move randomly
